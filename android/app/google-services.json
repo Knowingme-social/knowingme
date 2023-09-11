@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "431839111230",
+    "firebase_url": "https://knowingme-social-default-rtdb.firebaseio.com",
+    "project_id": "knowingme-social",
+    "storage_bucket": "knowingme-social.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431839111230:android:00002ee6cf251d7693496f",
+        "android_client_info": {
+          "package_name": "com.knowingme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431839111230-vbaeqorlarnma45g9h41rf792345stlg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.knowingme",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "431839111230-dflhmtt1elffh0cp5bfovh0hnj224n5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0HUZporgdYCK9stBkmHcU-yNp3JlREJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431839111230-7t5et17bofsfn5m5snskhr93a4aiu6ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
