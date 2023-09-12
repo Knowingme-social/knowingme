@@ -24,6 +24,12 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 
 ### For Android
 
+Inside of Android folder of the app  you will need to create a 
+'local.properties' file and  add <sdk.dir = /Users/User/Library/Android/sdk> (minus <> and replace User with proper PATH).
+Or your custom Path if you installed SDK somewhere else. 
+This will point local machine to SDK location 
+
+Make sure to start project from IDE and Android studio(Unless, your IDE automatically starts Emulator for you) 
 ```bash
 # using npm
 npm run android
