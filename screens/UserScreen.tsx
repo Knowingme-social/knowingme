@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FIREBASE_AUTH} from '../firebaseConfig';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
-export default function User({navigation}) {
+export default function UserScreen({navigation}) {
   // //for async data testing
   // const getData = async () => {
   //   try {
@@ -60,6 +60,9 @@ export default function User({navigation}) {
           navigation.navigate('Login', {screen: 'Login'});
         }}>
         <Text style={styles.text}>Sign Out</Text>
+      </Pressable>
+      <Pressable onPress={() => navigation.pop()}>
+        <Text style={styles.textSignUp}> Go Back </Text>
       </Pressable>
     </KeyboardAvoidingView>
   );

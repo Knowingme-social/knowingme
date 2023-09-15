@@ -12,7 +12,7 @@ import {
   onSnapshot,
   updateDoc,
 } from 'firebase/firestore';
-import TrashIcon from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export interface Daily {
   answer: string;
@@ -64,7 +64,7 @@ export default function History({navigation}) {
         </Text>
         <Text style={styles.AnswerText}>Answer: {item.answer}</Text>
 
-        <TrashIcon name="trash" size={24} color="red" onPress={deleteItem} />
+        <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
       </View>
     );
   };

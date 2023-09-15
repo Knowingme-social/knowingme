@@ -85,6 +85,10 @@ export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
+        <Text style={styles.textAccount}>No account?</Text>
+        <Pressable onPress={() => navigation.navigate('SignUp')}>
+          <Text style={styles.textSignUp}> Sign up </Text>
+        </Pressable>
         <Text>Please login</Text>
         <TextInput
           value={email}
@@ -113,9 +117,8 @@ export default function Login({navigation}) {
               onPress={signInWithGoogleAsync}>
               <Text style={styles.text}>Google Login</Text>
             </Pressable>
-            <Text style={styles.textAccount}>No account?</Text>
-            <Pressable onPress={() => navigation.navigate('SignUp')}>
-              <Text style={styles.textSignUp}> Sign up </Text>
+            <Pressable onPress={() => navigation.navigate('ResetPassword')}>
+              <Text style={styles.textSignUp}> Forgot your password? </Text>
             </Pressable>
           </>
         )}

@@ -13,6 +13,7 @@ import History from './History';
 import SignUp from './SignUp';
 import Question from './Question';
 import UserScreen from './UserScreen';
+import ResetPassword from './ResetPassword';
 
 const LoginStack = createNativeStackNavigator();
 
@@ -65,6 +66,11 @@ export default function LoginFlow() {
           <LoginStack.Screen
             name="SignUp"
             component={SignUp}
+            options={{headerShown: false}}
+          />
+          <LoginStack.Screen
+            name="ResetPassword"
+            component={ResetPassword}
             options={{headerShown: false}}
           />
           <LoginStack.Screen

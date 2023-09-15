@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable semi */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable quotes */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -17,8 +19,12 @@ import {
   ActivityIndicator,
   Button,
 } from 'react-native';
-import {FIREBASE_AUTH} from '../firebaseConfig';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
+import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 
 export default function SignUp({navigation}) {
   const auth = FIREBASE_AUTH;
@@ -27,28 +33,43 @@ export default function SignUp({navigation}) {
   const [loading, setLoading] = useState(false);
 
   const createUser = async () => {
-    setLoading(true);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        console.log('User account created & signed in!');
-        Alert.alert('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-          Alert.alert('account already exists');
-        }
-        if (error.code === 'auth/invalid-email') {
-          console.log('No email Entered');
-          Alert.alert('Please enter email');
-        }
-        if (error.code === 'auth/missing-password') {
-          console.log('Please enter Password');
-          Alert.alert('Please enter Password!');
-        }
-        console.error(error);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const newUserCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      console.log('User account created & signed in!');
+      Alert.alert('User account created & signed in!');
+      await addDoc(collection(FIRESTORE_DB, 'users'), {
+        firstName: null,
+        lastName: null,
+        email: email,
+        emailVerified: false,
+        picture: null,
+        displayName: null,
+        created: serverTimestamp(),
+      });
+      await sendEmailVerification(newUserCredentials.user);
+      console.log('Verification Email has been sent');
+      Alert.alert('Verification Email has been sent');
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log('That email address is already in use!');
+        Alert.alert('account already exists');
+      } else if (error.code === 'auth/invalid-email') {
+        console.log('No email Entered');
+        Alert.alert('Please enter email');
+      } else if (error.code === 'auth/missing-password') {
+        console.log('Please enter Password');
+        Alert.alert('Please enter Password!');
+      } else if (error.code === 'auth/weak-password') {
+        console.log('Weak password. Please choose a stronger one.');
+        Alert.alert('Please choose a stronger password.');
+      } else {
+        console.error('An error occured', error);
+      }
+    }
   };
 
   return (
@@ -148,3 +169,20 @@ const styles = StyleSheet.create({
 //   </>
 // )}
 // {/* <Button title="Clear" onPress={clearEntry} /> */}
+
+// try {
+//   const newUserCredentials = await createUserWithEmailAndPassword(
+//     auth,
+//     email,
+//     password,
+//   );
+//   const userProfileRef = doc(
+//     FIRESTORE_DB,
+//     `users/${newUserCredentials.user.uid}`,
+//   );
+//   await setDoc(userProfileRef, {email});
+//   await sendEmailVerification(newUserCredentials.user);
+//   return newUserCredentials;
+// } catch (error) {
+//   throw error;
+// }

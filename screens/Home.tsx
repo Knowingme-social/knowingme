@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View, Pressable, Button} from 'react-native';
-import {FIREBASE_AUTH} from '../firebaseConfig';
+import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 //import {useEffect, useState} from 'react';
 //import Login from './Login';
 import React from 'react';
