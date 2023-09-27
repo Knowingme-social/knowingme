@@ -28,6 +28,13 @@ end
 target 'knowingme' do
   config = use_native_modules!
 
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+  pod 'FirebaseAnalytics'
+  pod 'FirebaseDatabase'
+  
   # Flags change depending on the env values.
   flags = get_default_flags()
 
