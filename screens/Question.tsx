@@ -6,7 +6,7 @@
 import {useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button} from 'react-native';
 import React from 'react';
-import {FIRESTORE_DB} from '../firebaseConfig';
+import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 
 export default function Question({navigation}) {
@@ -21,6 +21,7 @@ export default function Question({navigation}) {
       answer: answer,
       done: true,
       created: serverTimestamp(),
+      user: FIREBASE_AUTH.currentUser?.uid,
     });
     //clears answer box after submition
     SetAnswer('');

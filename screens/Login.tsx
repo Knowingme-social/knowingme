@@ -16,9 +16,10 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {FIREBASE_AUTH} from '../firebaseConfig';
+import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {signInWithCredential, signInWithEmailAndPassword} from 'firebase/auth';
 import {GoogleAuthProvider} from 'firebase/auth';
+import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 
 // //to ignore async storage warning.
 //import {LogBox} from 'react-native';
@@ -51,6 +52,17 @@ export default function Login({navigation}) {
 
       user_sign_in
         .then(user => {
+          addDoc(collection(FIRESTORE_DB, 'users'), {
+            userId: auth.currentUser?.uid,
+            firstName: null,
+            lastName: null,
+            email: auth.currentUser?.email,
+            emailVerified: auth.currentUser?.emailVerified,
+            picture: null,
+            displayName: auth.currentUser?.displayName,
+            phone: auth.currentUser?.phoneNumber,
+            created: serverTimestamp(),
+          });
           console.log(user);
         })
         .catch(error => {

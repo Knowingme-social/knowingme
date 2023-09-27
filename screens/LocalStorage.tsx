@@ -81,3 +81,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+// //for async data testing
+// const getData = async () => {
+//   try {
+//     const answer = await AsyncStorage.getItem('answer');
+//     if (answer !== null) {
+//       console.log(answer);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

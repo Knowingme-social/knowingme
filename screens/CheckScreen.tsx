@@ -14,6 +14,7 @@ import SignUp from './SignUp';
 import Question from './Question';
 import UserScreen from './UserScreen';
 import ResetPassword from './ResetPassword';
+import EditProfile from './EditProfile';
 
 const LoginStack = createNativeStackNavigator();
 
@@ -53,6 +54,11 @@ export default function LoginFlow() {
           <LoginStack.Screen
             name="User Screen"
             component={UserScreen}
+            options={{headerShown: false}}
+          />
+          <LoginStack.Screen
+            name="Edit Profile"
+            component={EditProfile}
             options={{headerShown: false}}
           />
         </>

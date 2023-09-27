@@ -38,7 +38,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen name="TestScreen" component={Home} /> */}
+        {/* <Stack.Screen
+          name="TestScreen"
+          component={EditProfile}
+          options={{headerShown: false}}
+        /> */}
 
         {answer ? (
           <Stack.Screen

@@ -4,13 +4,15 @@
 import {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, FlatList, Button} from 'react-native';
 import React from 'react';
-import {FIRESTORE_DB} from '../firebaseConfig';
+import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
 import {
   collection,
   deleteDoc,
   doc,
+  where,
   onSnapshot,
   updateDoc,
+  query,
 } from 'firebase/firestore';
 import Entypo from 'react-native-vector-icons/Entypo';
 
@@ -20,16 +22,22 @@ export interface Daily {
   done: boolean;
   id: string;
   questionOfTheDay: string;
+  user: string;
 }
 
 export default function History({navigation}) {
   const [dailyData, setDailyData] = useState<Daily[]>([]);
+  const uid = FIREBASE_AUTH.currentUser?.uid;
 
   useEffect(() => {
-    // create a reference for DB collection
-    const dailyQuestionRef = collection(FIRESTORE_DB, 'DailyQuestionAnswer');
+    //create a reference for DB collection and query it by uid for
+    //specific user only
+    const dailyQuestionRef = query(
+      collection(FIRESTORE_DB, 'DailyQuestionAnswer'),
+      where('user', '==', uid),
+    );
 
-    // create a subscriber in order to get snapshots from DB without manualy pulling it
+    // create a subscriber in order to get snapshots from DB
     const subscriber = onSnapshot(dailyQuestionRef, {
       next: snapshot => {
         //console.log("updated");
@@ -47,7 +55,7 @@ export default function History({navigation}) {
     });
     // kill the loop for one iteration
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   //render data for list and create delete function
   const renderData = ({item}: any) => {
@@ -63,6 +71,7 @@ export default function History({navigation}) {
           Question: {item.questionOfTheDay}
         </Text>
         <Text style={styles.AnswerText}>Answer: {item.answer}</Text>
+        {/* <Text style={styles.AnswerText}>Answer: {item.id}</Text> */}
 
         <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
       </View>
