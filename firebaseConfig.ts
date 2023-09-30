@@ -29,7 +29,7 @@ import {
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCnQKBc5I70lm8VkfSZR_1e8J_Q4pcurYo",
+  apiKey: `${API_KEY}`,
   authDomain: `${AUTH_DOMAIN}`,
   databaseURL: `${DATABASE_URL}`,
   projectId: `${PROJECT_ID}`,

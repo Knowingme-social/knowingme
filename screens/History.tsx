@@ -1,20 +1,8 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, FlatList, Button} from 'react-native';
-import React from 'react';
-import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  where,
-  onSnapshot,
-  updateDoc,
-  query,
-} from 'firebase/firestore';
-import Entypo from 'react-native-vector-icons/Entypo';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { FIRESTORE_DB, FIREBASE_AUTH } from '../firebaseConfig';
 
 export interface Daily {
   answer: string;
@@ -25,9 +13,11 @@ export interface Daily {
   user: string;
 }
 
-export default function History({navigation}) {
+export default function History({ navigation }) {
   const [dailyData, setDailyData] = useState<Daily[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>('');
   const uid = FIREBASE_AUTH.currentUser?.uid;
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     //create a reference for DB collection and query it by uid for
@@ -38,56 +28,72 @@ export default function History({navigation}) {
     );
 
     // create a subscriber in order to get snapshots from DB
-    const subscriber = onSnapshot(dailyQuestionRef, {
-      next: snapshot => {
-        //console.log("updated");
-
-        const dailyData: Daily[] = [];
-        snapshot.docs.forEach(doc => {
-          dailyData.push({
-            id: doc.id,
-            ...doc.data(),
-          } as Daily);
-        });
-        setDailyData(dailyData);
-        //console.log(dailyData);
-      },
+    const unsubscribe = onSnapshot(dailyQuestionRef, (querySnapshot) => {
+      const dailyData: Daily[] = [];
+      querySnapshot.forEach((doc) => {
+        dailyData.push({ ...doc.data(), id: doc.id } as Daily);
+      });
+      setDailyData(dailyData);
     });
-    // kill the loop for one iteration
-    return () => subscriber();
-  }, [uid]);
 
-  //render data for list and create delete function
-  const renderData = ({item}: any) => {
-    const ref = doc(FIRESTORE_DB, `DailyQuestionAnswer/${item.id}`);
+    return () => unsubscribe();
+  }, []);
 
-    const deleteItem = async () => {
-      deleteDoc(ref);
-    };
-
-    return (
-      <View style={styles.container}>
-        <Text style={styles.QuestionText}>
-          Question: {item.questionOfTheDay}
-        </Text>
-        <Text style={styles.AnswerText}>Answer: {item.answer}</Text>
-        {/* <Text style={styles.AnswerText}>Answer: {item.id}</Text> */}
-
-        <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
-      </View>
-    );
+  const handleDateSelect = (date: any) => {
+    setSelectedDate(date.dateString);
   };
+
+  const markedDates = dailyData.reduce((acc, curr) => {
+    const date = new Date(curr.created.seconds * 1000);
+    const dateString = date.toISOString().split('T')[0];
+    if (curr.questionOfTheDay) {
+      acc = {
+        ...acc,
+        [dateString]: {
+          marked: true,
+          dotColor: 'blue',
+          question: curr.questionOfTheDay,
+        },
+      };
+    }
+    return acc;
+  }, {});
+
+  const renderItem = ({ item }: { item: Daily }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemText}>{item.questionOfTheDay}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      {dailyData.length >= 0 && (
-        <FlatList
-          data={dailyData}
-          renderItem={item => renderData(item)}
-          keyExtractor={(dailyData: Daily) => dailyData.id}
-        />
-      )}
-      <Button title="Go Back" onPress={() => navigation.pop()} />
+      <CalendarList
+        markedDates={markedDates}
+        onDayPress={handleDateSelect}
+        pastScrollRange={50}
+        futureScrollRange={50}
+        scrollEnabled={true}
+        style={styles.calendar}
+        theme={{
+          selectedDayBackgroundColor: '#007AFF',
+          selectedDayTextColor: '#FFFFFF',
+          todayTextColor: '#007AFF',
+          dotColor: '#007AFF',
+          arrowColor: '#007AFF',
+        }}
+      />
+      <FlatList
+        ref={flatListRef}
+        data={dailyData.filter(
+          (item) =>
+            new Date(item.created.seconds * 1000)
+              .toISOString()
+              .split('T')[0] === selectedDate,
+        )}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        style={styles.list}
+      />
     </View>
   );
 }
@@ -95,19 +101,20 @@ export default function History({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  QuestionText: {
-    flex: 1,
-    padding: 10,
-    fontSize: 17,
+  calendar: {
+    marginBottom: 10,
   },
-  AnswerText: {
+  list: {
     flex: 1,
+  },
+  itemContainer: {
     padding: 10,
-    fontSize: 12,
-    color: 'blue',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+  },
+  itemText: {
+    fontSize: 16,
   },
 });
