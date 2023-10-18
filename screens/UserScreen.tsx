@@ -21,10 +21,20 @@ import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {collection, onSnapshot, query, where} from 'firebase/firestore';
 import {oneUser} from './EditProfile';
+import { Share } from 'react-native';
 
-export default function New({navigation}) {
+export default function UserScreen({navigation}) {
   const uid = FIREBASE_AUTH.currentUser?.uid;
   const [userData, setUserData] = useState<oneUser | null>(null);
+
+  function shareInvite() {
+    if (uid) {
+      const referralLink = `https://Knowingme.io/invite?referral_uid=${uid}`;
+      Share.share({
+        message: `Join me on Knowingme! Use my link: ${referralLink}`,
+      });
+    }
+  }
 
   useEffect(() => {
     // Check if uid exists before making the query
@@ -73,6 +83,11 @@ export default function New({navigation}) {
           About: Just an average Joe who likes to hike and bike, like a Mike!
         </Text> */}
         <View style={styles.userBtnWrapper}>
+        <TouchableOpacity
+            style={styles.userBtn}
+            onPress={shareInvite}>
+            <Text style={styles.userBtnTxt}>Invite Friends</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.userBtn}
             onPress={() => navigation.push('Edit Profile')}>
@@ -88,6 +103,7 @@ export default function New({navigation}) {
             <Text style={styles.userBtnTxt}>Sign Out</Text>
           </TouchableOpacity>
         </View>
+        
         <View>
           <Pressable onPress={() => navigation.pop()}>
             <Text style={{color: 'blue'}}> Go Back </Text>
