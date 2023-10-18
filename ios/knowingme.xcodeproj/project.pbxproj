@@ -14,8 +14,8 @@
 		6B97E1C03C488B64F03889E6 /* libPods-knowingme-knowingmeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEB669987BA0FA0CEBDA58DE /* libPods-knowingme-knowingmeTests.a */; };
 		7DEC5FD55FB9FAD24544304C /* libPods-knowingme.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F886D627FC89CFE59AC519C /* libPods-knowingme.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		F80A26212AC5903000382E95 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F80A26202AC5903000382E95 /* GoogleService-Info.plist */; };
-		F80A26222AC5903000382E95 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F80A26202AC5903000382E95 /* GoogleService-Info.plist */; };
+		AF1450382ACCC8C600AEB272 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF1450372ACCC8C600AEB272 /* GoogleService-Info.plist */; };
+		AF1450392ACCC8C600AEB272 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF1450372ACCC8C600AEB272 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,8 +44,8 @@
 		3F886D627FC89CFE59AC519C /* libPods-knowingme.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-knowingme.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		803B3B8F630B20F93DB89985 /* Pods-knowingme-knowingmeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-knowingme-knowingmeTests.debug.xcconfig"; path = "Target Support Files/Pods-knowingme-knowingmeTests/Pods-knowingme-knowingmeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = knowingme/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AF1450372ACCC8C600AEB272 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F80A26202AC5903000382E95 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Desktop/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FEB669987BA0FA0CEBDA58DE /* libPods-knowingme-knowingmeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-knowingme-knowingmeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -119,7 +119,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F80A26202AC5903000382E95 /* GoogleService-Info.plist */,
+				AF1450372ACCC8C600AEB272 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* knowingme */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* knowingmeTests */,
@@ -240,7 +240,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F80A26222AC5903000382E95 /* GoogleService-Info.plist in Resources */,
+				AF1450392ACCC8C600AEB272 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				F80A26212AC5903000382E95 /* GoogleService-Info.plist in Resources */,
+				AF1450382ACCC8C600AEB272 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
