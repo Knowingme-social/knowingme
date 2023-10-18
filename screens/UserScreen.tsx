@@ -17,6 +17,8 @@ import {
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {collection, onSnapshot, query, where} from 'firebase/firestore';
@@ -84,10 +86,15 @@ export default function UserScreen({navigation}) {
         </Text> */}
         <View style={styles.userBtnWrapper}>
         <TouchableOpacity
-            style={styles.userBtn}
-            onPress={shareInvite}>
-            <Text style={styles.userBtnTxt}>Invite Friends</Text>
-          </TouchableOpacity>
+          style={{
+            position: 'absolute',
+            top: 10, 
+            right: 10, 
+            zIndex: 1
+          }}
+          onPress={shareInvite}>
+          <Icon name="share-sharp" size={30} color="blue" />
+        </TouchableOpacity>
           <TouchableOpacity
             style={styles.userBtn}
             onPress={() => navigation.push('Edit Profile')}>
