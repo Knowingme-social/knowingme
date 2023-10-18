@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable no-trailing-spaces */
@@ -58,7 +59,7 @@ export default function SignUp({navigation}) {
         emailVerified: FIREBASE_AUTH.currentUser?.emailVerified,
         picture:
           'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1',
-        displayName: FIREBASE_AUTH.currentUser?.displayName,
+        displayName: firstName + ' ' + lastName,
         phone: FIREBASE_AUTH.currentUser?.phoneNumber,
         created: serverTimestamp(),
       });

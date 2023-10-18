@@ -1,4 +1,7 @@
 declare module '@env' {
+  //uncomment if implementing API_Key Fork
+  // export const API_KEY_IOS: string;
+  // export const API_KEY_ANDROID: string;
   export const API_KEY: string;
   export const AUTH_DOMAIN: string;
   export const DATABASE_URL: string;
