@@ -88,12 +88,13 @@ export default function UserScreen({navigation}) {
         <TouchableOpacity
           style={{
             position: 'absolute',
-            top: 10, 
+            top: -190, 
             right: 10, 
             zIndex: 1
           }}
           onPress={shareInvite}>
-          <Icon name="share-sharp" size={30} color="blue" />
+          <Icon name="share-sharp" size={30} color="black" />
+          <Text>share</Text>
         </TouchableOpacity>
           <TouchableOpacity
             style={styles.userBtn}
