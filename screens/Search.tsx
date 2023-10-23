@@ -14,6 +14,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, {useState} from 'react';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
@@ -88,17 +89,20 @@ export default function Search({navigation}) {
 
   return (
     <View>
-      <TextInput
-        style={styles.textinputbox}
-        placeholder="Type Friend's Name"
-        onChangeText={search => {
-          if (search.length >= 2) {
-            fetchUsers(search);
-          } else {
-            setUsers([]);
-          }
-        }}
-      />
+      <View style={styles.textinputbox}>
+        <Entypo name="magnifying-glass" size={24} color="black" />
+        <TextInput
+          style={{flex: 1, paddingLeft: 10}}
+          placeholder="Type Friend's Name"
+          onChangeText={search => {
+            if (search.length >= 2) {
+              fetchUsers(search);
+            } else {
+              setUsers([]);
+            }
+          }}
+        />
+      </View>
       <FlatList
         numColumns={1}
         horizontal={false}
@@ -145,6 +149,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 8,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft: 22,

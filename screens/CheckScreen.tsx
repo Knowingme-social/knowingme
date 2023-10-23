@@ -38,7 +38,7 @@ export default function LoginFlow() {
     });
     setTimeout(() => {
       setLoading(false);
-    }, 1500);
+    }, 500);
   }, []);
 
   return (
