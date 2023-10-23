@@ -12,7 +12,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Pressable,
+  LogBox,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,6 +21,8 @@ import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {collection, onSnapshot, query, where} from 'firebase/firestore';
 import {oneUser} from './EditProfile';
+
+LogBox.ignoreAllLogs();
 
 export default function New({navigation}) {
   const uid = FIREBASE_AUTH.currentUser?.uid;
@@ -83,7 +85,10 @@ export default function New({navigation}) {
             onPress={() => {
               FIREBASE_AUTH.signOut();
               GoogleSignin.signOut();
-              navigation.navigate(() => navigation.popToTop());
+              navigation.push('Login');
+              // navigation.navigate(() => {
+              //   Login;
+              //});
             }}>
             <Text style={styles.userBtnTxt}>Sign Out</Text>
           </TouchableOpacity>
