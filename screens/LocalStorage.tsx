@@ -35,13 +35,33 @@ export default function LocalStorage({navigation}) {
   //clears answer of the day from Async storage
   const clearDailyAnswer = async () => {
     try {
-      await AsyncStorage.removeItem('answer');
+      // Check if it's time to clear the answer
+      const lastClearTime = await AsyncStorage.getItem('lastClearTime');
+      const currentTime = new Date().getTime();
+      if (
+        !lastClearTime ||
+        currentTime - parseInt(lastClearTime, 10) >= 24 * 60 * 60 * 1000
+      ) {
+        // Clear the answer
+        await AsyncStorage.removeItem('answer');
 
-      console.log(`updated ${answer}`);
+        // Update the last clear time
+        await AsyncStorage.setItem('lastClearTime', currentTime.toString());
+
+        console.log('Answer cleared.');
+      } else {
+        console.log('No need to clear the answer.');
+      }
     } catch (error) {
       console.error(`Error: ${error}`);
     }
   };
+
+  // Run the function initially
+  clearDailyAnswer();
+
+  // Set up a setInterval to run the function every 24 hours
+  setInterval(clearDailyAnswer, 24 * 60 * 60 * 1000);
 
   return (
     <View style={styles.container}>

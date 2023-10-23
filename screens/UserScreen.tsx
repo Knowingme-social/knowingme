@@ -89,23 +89,36 @@ export default function New({navigation}) {
           </TouchableOpacity>
         </View>
         <View>
-          <Pressable onPress={() => navigation.pop()}>
+          {/* <Pressable onPress={() => navigation.pop()}>
             <Text style={{color: 'blue'}}> Go Back </Text>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         <View style={styles.userInfoWrapper}>
-          <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>15</Text>
-            <Text style={styles.userInfoSubTitle}>Friends</Text>
-          </View>
-
           <View style={styles.userInfoItem}>
             <TouchableOpacity
               onPress={() => {
                 navigation.push('History');
               }}>
-              <Text style={styles.userInfoTitle}>Answer History</Text>
+              <Text style={styles.userInfoTitle}>History</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.userInfoItem}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push('Search');
+              }}>
+              <Text style={styles.userInfoTitle}>Add</Text>
+              <Text style={styles.userInfoSubTitle}>Friends</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.userInfoItem}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push('FriendRequest');
+              }}>
+              <Text style={styles.userInfoTitle}> Friend</Text>
+              <Text style={styles.userInfoSubTitle}>Requests</Text>
             </TouchableOpacity>
           </View>
         </View>

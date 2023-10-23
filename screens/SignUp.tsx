@@ -18,9 +18,7 @@ import {
   View,
   Text,
   TextInput,
-  KeyboardAvoidingView,
   Pressable,
-  ActivityIndicator,
   Button,
   TouchableOpacity,
   SafeAreaView,
@@ -53,8 +51,8 @@ export default function SignUp({navigation}) {
       Alert.alert('User account created & signed in!');
       await addDoc(collection(FIRESTORE_DB, 'users'), {
         userId: auth.currentUser?.uid,
-        firstName: firstName,
-        lastName: lastName,
+        firstName: firstName.toLowerCase(),
+        lastName: lastName.toLowerCase(),
         email: FIREBASE_AUTH.currentUser?.email,
         emailVerified: FIREBASE_AUTH.currentUser?.emailVerified,
         picture:

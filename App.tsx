@@ -9,7 +9,6 @@ import CheckScreen from './screens/CheckScreen';
 import {useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Search from './screens/Search';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,8 +39,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen
-          name="TestScreen"
-          component={Search}
+          name="LocalStorage"
+          component={LocalStorage}
           options={{headerShown: false}}
         /> */}
 

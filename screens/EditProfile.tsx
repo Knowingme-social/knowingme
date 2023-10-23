@@ -134,8 +134,8 @@ export default function EditProfile({navigation}) {
         console.log(docRef);
         // Update the document
         await updateDoc(docRef, {
-          firstName: newFirst || userData?.firstName,
-          lastName: newLast || userData?.lastName,
+          firstName: newFirst.toLowerCase() || userData?.firstName,
+          lastName: newLast.toLowerCase() || userData?.lastName,
           email: newEmail || userData?.email,
           displayName: userData?.displayName,
           phone: newPhone || userData?.phone,

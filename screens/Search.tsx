@@ -1,17 +1,28 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import {View, Text, TextInput, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Button,
+  Pressable,
+  Alert,
+} from 'react-native';
 import React, {useState} from 'react';
 
-import {FIRESTORE_DB} from '../firebaseConfig';
-import {collection, where, query, getDocs} from 'firebase/firestore';
-import {oneUser} from './EditProfile';
+import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
+//import {oneUser} from './EditProfile';
 
-export default function Search() {
+export default function Search({navigation}) {
   // Use an array to store user data
-  const [users, setUsers] = useState<oneUser[]>([]);
+  const [users, setUsers] = useState([]);
+  const uid = FIREBASE_AUTH.currentUser?.uid;
+  const email = FIREBASE_AUTH.currentUser?.email;
 
   const fetchUsers = async search => {
     try {
@@ -22,12 +33,13 @@ export default function Search() {
 
       const snapshot = await getDocs(getUsers);
 
-      const userInfo: oneUser[] = [];
-      snapshot.forEach(doc => {
-        userInfo.push({
+      const userInfo = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
           ...doc.data(),
-        } as oneUser);
-      });
+        }))
+        .filter(user => user.userId !== uid); // Exclude the currently signed-in user
+
       // Update the state with the fetched data
       setUsers(userInfo);
     } catch (error) {
@@ -37,10 +49,46 @@ export default function Search() {
 
   //console.log(users);
 
+  const sendFriendRequest = async receiverId => {
+    try {
+      if (uid) {
+        const friendRequestsCollection = collection(
+          FIRESTORE_DB,
+          'friendRequests',
+        );
+
+        // Check if a friend request already exists with the same senderId and receiverId
+        const friendRequestQuery = query(
+          friendRequestsCollection,
+          where('senderId', '==', uid),
+          where('receiverId', '==', receiverId),
+        );
+
+        const existingRequests = await getDocs(friendRequestQuery);
+
+        if (existingRequests.size === 0) {
+          // If no existing requests are found, send the friend request
+          await addDoc(friendRequestsCollection, {
+            senderId: uid,
+            receiverId,
+            status: 'pending',
+            senderEmail: email,
+          });
+          console.log('Friend request sent');
+        } else {
+          Alert.alert('Friend request already sent');
+          console.log('Friend request already sent');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View>
       <TextInput
-        placeholder="Search"
+        placeholder="Type Friend's Name"
         onChangeText={search => fetchUsers(search)} // Update the search state
       />
       <FlatList
@@ -49,13 +97,26 @@ export default function Search() {
         data={users}
         keyExtractor={users => users.userId} // Add a key extractor
         renderItem={({item}) => (
-          <TouchableOpacity>
+          <View>
             <Text>
               {item.firstName} {item.lastName}
             </Text>
-          </TouchableOpacity>
+            <Button
+              title="Send Friend Request"
+              onPress={() => {
+                console.log('sent');
+                sendFriendRequest(item.email);
+                navigation.pop();
+              }}
+            />
+          </View>
         )}
       />
+      <View>
+        <Pressable onPress={() => navigation.pop()}>
+          <Text style={{color: 'blue'}}> Go Back </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

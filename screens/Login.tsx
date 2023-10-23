@@ -19,7 +19,14 @@ import {
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {signInWithCredential, signInWithEmailAndPassword} from 'firebase/auth';
 import {GoogleAuthProvider} from 'firebase/auth';
-import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 
 // //to ignore async storage warning.
 //import {LogBox} from 'react-native';
@@ -41,40 +48,48 @@ export default function Login({navigation}) {
     try {
       // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      // Get the users ID token
+      // Get the user's ID token
       const {idToken} = await GoogleSignin.signIn();
 
       // Create a Google credential with the token
       const googleCredential = GoogleAuthProvider.credential(idToken);
 
       // Sign-in the user with the credential
-      const user_sign_in = signInWithCredential(auth, googleCredential);
+      signInWithCredential(auth, googleCredential)
+        .then(async userCredential => {
+          const user = userCredential.user;
 
-      user_sign_in
-        .then(user => {
-          addDoc(collection(FIRESTORE_DB, 'users'), {
-            userId: auth.currentUser?.uid,
-            firstName: null,
-            lastName: null,
-            email: auth.currentUser?.email,
-            emailVerified: auth.currentUser?.emailVerified,
-            picture: null,
-            displayName: auth.currentUser?.displayName,
-            phone: auth.currentUser?.phoneNumber,
-            created: serverTimestamp(),
-          });
+          // Check if the user already exists in the Firestore database
+          const userRef = doc(FIRESTORE_DB, 'users', user.uid);
+          const docSnapshot = await getDoc(userRef);
+
+          if (!docSnapshot.exists()) {
+            // User doesn't exist, so add them to the database
+            await setDoc(userRef, {
+              userId: user.uid,
+              firstName: 'No',
+              lastName: 'Name',
+              email: user.email,
+              emailVerified: user.emailVerified,
+              picture: null,
+              displayName: user.displayName,
+              phone: user.phoneNumber,
+              created: serverTimestamp(),
+            });
+          }
+
           console.log(user);
         })
         .catch(error => {
-          console.log(error);
+          console.log('Error signing in:', error);
         });
     } catch (error) {
       if (error === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
+        // user canceled the login flow
       } else if (error === statusCodes.IN_PROGRESS) {
         // operation (e.g. sign in) is in progress already
       } else if (error === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
+        // Play services not available or outdated
       } else {
         // some other error happened
       }

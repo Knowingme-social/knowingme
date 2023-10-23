@@ -11,7 +11,6 @@ import {
   doc,
   where,
   onSnapshot,
-  updateDoc,
   query,
 } from 'firebase/firestore';
 import Entypo from 'react-native-vector-icons/Entypo';
