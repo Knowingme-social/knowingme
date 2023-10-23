@@ -19,7 +19,6 @@ import {
   Text,
   TextInput,
   Pressable,
-  Button,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -180,7 +179,9 @@ export default function SignUp({navigation}) {
           <Pressable style={styles.button} onPress={createUser}>
             <Text style={styles.text}>Sign Up</Text>
           </Pressable>
-          <Button title="Go Back" onPress={() => navigation.pop()} />
+          <Pressable onPress={() => navigation.pop()}>
+            <Text style={styles.textSignUp}> Go Back </Text>
+          </Pressable>
         </>
       </View>
     </SafeAreaView>
@@ -217,6 +218,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'white',
+  },
+  textSignUp: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'blue',
   },
 });
 

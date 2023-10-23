@@ -18,14 +18,17 @@ import EditProfile from './EditProfile';
 import Search from './Search';
 
 import FriendRequest from './FriendRequest';
+import {ActivityIndicator} from 'react-native';
 
 const LoginStack = createNativeStackNavigator();
 
 export default function LoginFlow() {
   const [user, setUser] = useState<User | null>();
+  const [loading, setLoading] = useState(false);
 
   //sets logged in user
   useEffect(() => {
+    setLoading(true);
     onAuthStateChanged(FIREBASE_AUTH, user => {
       //uncomment to get the login scope list readable in console
       //console.log(JSON.stringify(user, null, 2));
@@ -33,67 +36,76 @@ export default function LoginFlow() {
       console.log('user', user?.email);
       setUser(user);
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
   }, []);
 
   return (
-    <LoginStack.Navigator>
-      {user ? (
-        <>
-          {/* <LoginStack.Screen
-              name="Home"
-              component={Home}
-              options={{headerShown: false}}
-            /> */}
-          {/* <LoginStack.Screen
-              name="Question"
-              component={Question}
-              options={{headerShown: false}}
-            /> */}
-          <LoginStack.Screen
-            name="User Screen"
-            component={UserScreen}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="History"
-            component={History}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="Search"
-            component={Search}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="FriendRequest"
-            component={FriendRequest}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="Edit Profile"
-            component={EditProfile}
-            options={{headerShown: false}}
-          />
-        </>
+    <>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <>
-          <LoginStack.Screen
-            name="Login"
-            component={Login}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{headerShown: false}}
-          />
-          <LoginStack.Screen
-            name="ResetPassword"
-            component={ResetPassword}
-            options={{headerShown: false}}
-          />
-        </>
+        <LoginStack.Navigator>
+          {user ? (
+            <>
+              {/* <LoginStack.Screen
+                name="Home"
+                component={Home}
+                options={{headerShown: false}}
+              /> */}
+              {/* <LoginStack.Screen
+                name="Question"
+                component={Question}
+                options={{headerShown: false}}
+              /> */}
+              <LoginStack.Screen
+                name="User Screen"
+                component={UserScreen}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="History"
+                component={History}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="Search"
+                component={Search}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="FriendRequest"
+                component={FriendRequest}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="Edit Profile"
+                component={EditProfile}
+                options={{headerShown: false}}
+              />
+            </>
+          ) : (
+            <>
+              <LoginStack.Screen
+                name="Login"
+                component={Login}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="ResetPassword"
+                component={ResetPassword}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
+        </LoginStack.Navigator>
       )}
-    </LoginStack.Navigator>
+    </>
   );
 }

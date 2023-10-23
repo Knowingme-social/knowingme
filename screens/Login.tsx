@@ -19,14 +19,7 @@ import {
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {signInWithCredential, signInWithEmailAndPassword} from 'firebase/auth';
 import {GoogleAuthProvider} from 'firebase/auth';
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-} from 'firebase/firestore';
+import {doc, getDoc, serverTimestamp, setDoc} from 'firebase/firestore';
 
 // //to ignore async storage warning.
 //import {LogBox} from 'react-native';
@@ -112,10 +105,6 @@ export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
-        <Text style={styles.textAccount}>No account?</Text>
-        <Pressable onPress={() => navigation.navigate('SignUp')}>
-          <Text style={styles.textSignUp}> Sign up </Text>
-        </Pressable>
         <Text>Please login</Text>
         <TextInput
           value={email}
@@ -132,6 +121,9 @@ export default function Login({navigation}) {
           autoCapitalize="none"
           onChangeText={text => setPassword(text)}
         />
+        <Pressable onPress={() => navigation.navigate('ResetPassword')}>
+          <Text style={styles.textSignUp}> Forgot your password? </Text>
+        </Pressable>
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
@@ -144,8 +136,9 @@ export default function Login({navigation}) {
               onPress={signInWithGoogleAsync}>
               <Text style={styles.text}>Google Login</Text>
             </Pressable>
-            <Pressable onPress={() => navigation.navigate('ResetPassword')}>
-              <Text style={styles.textSignUp}> Forgot your password? </Text>
+            <Text style={styles.textAccount}>No account, yet?</Text>
+            <Pressable onPress={() => navigation.navigate('SignUp')}>
+              <Text style={styles.textSignUp}> Sign up </Text>
             </Pressable>
           </>
         )}
