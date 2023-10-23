@@ -11,6 +11,7 @@ import {
   Button,
   Pressable,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import React, {useState} from 'react';
 
@@ -88,8 +89,15 @@ export default function Search({navigation}) {
   return (
     <View>
       <TextInput
+        style={styles.textinputbox}
         placeholder="Type Friend's Name"
-        onChangeText={search => fetchUsers(search)} // Update the search state
+        onChangeText={search => {
+          if (search.length >= 2) {
+            fetchUsers(search);
+          } else {
+            setUsers([]);
+          }
+        }}
       />
       <FlatList
         numColumns={1}
@@ -112,11 +120,54 @@ export default function Search({navigation}) {
           </View>
         )}
       />
-      <View>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <Pressable onPress={() => navigation.pop()}>
-          <Text style={{color: 'blue'}}> Go Back </Text>
+          <Text style={{color: 'blue'}}>Go Back</Text>
         </Pressable>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  textinputtitle: {
+    fontSize: 16,
+    marginVertical: 4,
+    color: 'black',
+  },
+  textinputbox: {
+    width: '100%',
+    height: 48,
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 22,
+  },
+  button: {
+    marginVertical: 6,
+    height: 45,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 6,
+    backgroundColor: '#3CB371',
+  },
+  text: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
+  textSignUp: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'blue',
+  },
+});
