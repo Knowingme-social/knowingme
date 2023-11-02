@@ -35,27 +35,36 @@ export default function LocalStorage({navigation}) {
   //clears answer of the day from Async storage
   const clearDailyAnswer = async () => {
     try {
-      // Check if it's time to clear the answer
-      const lastClearTime = await AsyncStorage.getItem('lastClearTime');
+      // Get the current date and time
       const currentTime = new Date().getTime();
-      if (
-        !lastClearTime ||
-        currentTime - parseInt(lastClearTime, 10) >= 24 * 60 * 60 * 1000
-      ) {
+
+      // Calculate the time until midnight (in milliseconds)
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const timeUntilMidnight = midnight.getTime() - currentTime;
+
+      // Schedule the function to run at midnight
+      setTimeout(async () => {
         // Clear the answer
         await AsyncStorage.removeItem('answer');
 
         // Update the last clear time
         await AsyncStorage.setItem('lastClearTime', currentTime.toString());
 
-        console.log('Answer cleared.');
-      } else {
-        console.log('No need to clear the answer.');
-      }
+        console.log('Answer cleared at midnight.');
+
+        // Schedule the function to run again for the next midnight
+        clearDailyAnswer();
+      }, timeUntilMidnight);
+
+      console.log('Clear function scheduled for midnight.');
     } catch (error) {
       console.error(`Error: ${error}`);
     }
   };
+
+  // Call the function to start the process
+  clearDailyAnswer();
 
   // Run the function initially
   clearDailyAnswer();
@@ -63,6 +72,21 @@ export default function LocalStorage({navigation}) {
   // Set up a setInterval to run the function every 24 hours
   setInterval(clearDailyAnswer, 24 * 60 * 60 * 1000);
 
+  const clearAnswerForTesting = async () => {
+    try {
+      await AsyncStorage.multiRemove([
+        'answer',
+        'question',
+        'answer1',
+        'answer2',
+        'answer3',
+        'answer4',
+      ]);
+      console.log('Cleared answer and question from AsyncStorage');
+    } catch (error) {
+      console.error('Error clearing items:', error);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text>{questionOfTheDay}</Text>
@@ -80,7 +104,7 @@ export default function LocalStorage({navigation}) {
           nextScreen();
         }}
       />
-      <Button title="Clear" onPress={clearDailyAnswer} />
+      <Button title="Clear" onPress={clearAnswerForTesting} />
     </View>
   );
 }
@@ -113,3 +137,34 @@ const styles = StyleSheet.create({
 //     console.log(error);
 //   }
 // };
+
+// // clears every 24 hours from when answer was given
+// const clearDailyAnswer = async () => {
+//   try {
+//     // Check if it's time to clear the answer
+//     const lastClearTime = await AsyncStorage.getItem('lastClearTime');
+//     const currentTime = new Date().getTime();
+//     if (
+//       !lastClearTime ||
+//       currentTime - parseInt(lastClearTime, 10) >= 24 * 60 * 60 * 1000
+//     ) {
+//       // Clear the answer
+//       await AsyncStorage.removeItem('answer');
+
+//       // Update the last clear time
+//       await AsyncStorage.setItem('lastClearTime', currentTime.toString());
+
+//       console.log('Answer cleared.');
+//     } else {
+//       console.log('No need to clear the answer.');
+//     }
+//   } catch (error) {
+//     console.error(`Error: ${error}`);
+//   }
+// };
+
+// // Run the function initially
+// clearDailyAnswer();
+
+// // Set up a setInterval to run the function every 24 hours
+// setInterval(clearDailyAnswer, 24 * 60 * 60 * 1000);

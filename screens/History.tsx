@@ -5,23 +5,17 @@ import {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, FlatList, Button} from 'react-native';
 import React from 'react';
 import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  where,
-  onSnapshot,
-  query,
-} from 'firebase/firestore';
+import {collection, deleteDoc, doc, onSnapshot} from 'firebase/firestore';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 export interface Daily {
   answer: string;
-  created: Object;
-  done: boolean;
-  id: string;
+  date: Object;
+  timestamp: Object;
+
+  email: string;
   questionOfTheDay: string;
-  user: string;
+  userId: string;
 }
 
 export default function History({navigation}) {
@@ -31,13 +25,11 @@ export default function History({navigation}) {
   useEffect(() => {
     //create a reference for DB collection and query it by uid for
     //specific user only
-    const dailyQuestionRef = query(
-      collection(FIRESTORE_DB, 'DailyQuestionAnswer'),
-      where('user', '==', uid),
-    );
+    const userDocRef = doc(collection(FIRESTORE_DB, 'answers'), uid);
+    const answersCollectionRef = collection(userDocRef, 'daily');
 
     // create a subscriber in order to get snapshots from DB
-    const subscriber = onSnapshot(dailyQuestionRef, {
+    const subscriber = onSnapshot(answersCollectionRef, {
       next: snapshot => {
         //console.log("updated");
 
@@ -58,8 +50,8 @@ export default function History({navigation}) {
 
   //render data for list and create delete function
   const renderData = ({item}: any) => {
-    const ref = doc(FIRESTORE_DB, `DailyQuestionAnswer/${item.id}`);
-
+    const ref = doc(FIRESTORE_DB, `answers/${uid}/daily/${item.id}`);
+    //console.log(item.id);
     const deleteItem = async () => {
       deleteDoc(ref);
     };
@@ -69,7 +61,7 @@ export default function History({navigation}) {
         <Text style={styles.QuestionText}>
           Question: {item.questionOfTheDay}
         </Text>
-        <Text style={styles.AnswerText}>Answer: {item.answer}</Text>
+        <Text style={styles.AnswerText}>Answer: {item.useranswer}</Text>
         {/* <Text style={styles.AnswerText}>Answer: {item.id}</Text> */}
 
         <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
@@ -110,3 +102,7 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
 });
+
+{
+  /* <Button title="Go Back" onPress={() => navigation.pop()} /> */
+}
