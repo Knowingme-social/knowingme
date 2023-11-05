@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, FlatList, Button} from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, FlatList, Button, TouchableOpacity } from 'react-native';
 import React from 'react';
-import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
+import { FIRESTORE_DB, FIREBASE_AUTH } from '../firebaseConfig';
 import {
   collection,
   deleteDoc,
@@ -25,7 +25,7 @@ export interface Daily {
   user: string;
 }
 
-export default function History({navigation}) {
+export default function History({ navigation }) {
   const [dailyData, setDailyData] = useState<Daily[]>([]);
   const uid = FIREBASE_AUTH.currentUser?.uid;
 
@@ -58,7 +58,7 @@ export default function History({navigation}) {
   }, [uid]);
 
   //render data for list and create delete function
-  const renderData = ({item}: any) => {
+  const renderData = ({ item }: any) => {
     const ref = doc(FIRESTORE_DB, `DailyQuestionAnswer/${item.id}`);
 
     const deleteItem = async () => {
@@ -67,19 +67,28 @@ export default function History({navigation}) {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.QuestionText}>
-          Question: {item.questionOfTheDay}
-        </Text>
-        <Text style={styles.AnswerText}>Answer: {item.answer}</Text>
-        {/* <Text style={styles.AnswerText}>Answer: {item.id}</Text> */}
-
-        <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
+        <View style={styles.questionContainer}>
+          <Text style={styles.questionText}>
+            {item.questionOfTheDay}
+          </Text>
+        </View>
+        <View style={styles.answerContainer}>
+          <Text style={styles.answerText}>
+            {item.answer}
+          </Text>
+          <TouchableOpacity onPress={deleteItem}>
+            <Entypo name="trash" size={24} color="red" />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {marginBottom: 10}]}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Your Daily Answers</Text>
+      </View>
       {dailyData.length >= 0 && (
         <FlatList
           data={dailyData}
@@ -95,19 +104,59 @@ export default function History({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  header: {
+    backgroundColor: '#4B0082',
+    width: '100%',
+    height: 150,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  QuestionText: {
-    flex: 1,
-    padding: 10,
-    fontSize: 17,
+  headerText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
   },
-  AnswerText: {
-    flex: 1,
+  questionContainer: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
     padding: 10,
-    fontSize: 12,
-    color: 'blue',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 20,
+    borderRadius: 10,
+  },
+  questionText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4B0082',
+  },
+  answerContainer: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    padding: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 20,
+    borderRadius: 10,
+  },
+  answerText: {
+    fontSize: 14,
+    color: '#4B0082',
+    flex: 1,
   },
 });

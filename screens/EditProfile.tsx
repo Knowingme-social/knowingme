@@ -160,38 +160,57 @@
             {userData?.firstName} {userData?.lastName}
           </Text>
         </View>
-
+<>
+</>
         <View style={styles.formContainer}>
-
-          <View style={styles.form}>
-      <View style={styles.question}>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          placeholderTextColor="#FF4A56"
-        />
-      </View>
-      <View style={styles.question}>
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          placeholderTextColor="#FF4A56"
-        />
-      </View>
-      <View style={styles.question}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email Address"
-          placeholderTextColor="#FF4A56"
-        />
-      </View>
-      <View style={styles.question}>
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          placeholderTextColor="#FF4A56"
-        />
-      </View>
+        <View style={styles.form}>
+  <View style={styles.question}>
+    <TextInput
+      style={styles.input}
+      placeholder="Display Name"
+      placeholderTextColor="black"
+      value={userData?.displayName} // Bind value to userData state
+      onChangeText={(text) => setUserData(prevUserData => ({ ...prevUserData!, displayName: text }))} // Update the state variable when text changes
+    />
+  </View>
+  <View style={styles.question}>
+    <TextInput
+      style={styles.input}
+      placeholder="First Name"
+      placeholderTextColor="black"
+      value={newFirst} // Bind value to newFirst state
+      onChangeText={setNewFirst} // Update the state variable when text changes
+    />
+  </View>
+  <View style={styles.question}>
+    <TextInput
+      style={styles.input}
+      placeholder="Last Name"
+      placeholderTextColor="black"
+      value={newLast} // Bind value to newLast state
+      onChangeText={setNewLast} // Update the state variable when text changes
+    />
+  </View>
+  <View style={styles.question}>
+    <TextInput
+      style={styles.input}
+      placeholder="Email Address"
+      placeholderTextColor="black"
+      value={newEmail} // Bind value to newEmail state
+      onChangeText={setNewEmail} // Update the state variable when text changes
+      keyboardType="email-address" // Set keyboard type for emails
+    />
+  </View>
+  <View style={styles.question}>
+    <TextInput
+      style={styles.input}
+      placeholder="Phone Number"
+      placeholderTextColor="black"
+      value={newPhone} // Bind value to newPhone state
+      onChangeText={setNewPhone} // Update the state variable when text changes
+      keyboardType="phone-pad" // Set keyboard type for phone numbers
+    />
+  </View>
     </View>
           <TouchableOpacity style={styles.saveButton} onPress={updateUser}>
             <Text style={styles.saveButtonText}>Save</Text>
@@ -209,39 +228,44 @@
 
   const styles = StyleSheet.create({
     form: {
+      shadowColor: '#000',
+      shadowOffset: { width: 1, height: 3 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 10,
       borderRadius: 40,
-      paddingVertical: 30,
-      paddingHorizontal: 25,
-      backgroundColor: '#FFF',
-      margin: 40,
+      paddingVertical: 43.5,
+      paddingHorizontal: 28,
+      backgroundColor: '#e9ffe8',
+      margin: 5,
     },
     header: {
-      color: '#FF4A56',
+      color: 'black',
       fontWeight: '300',
       marginBottom: 35,
       textTransform: 'uppercase',
     },
     question: {
-      marginBottom: 10,
+      marginBottom: 20,
     },
     input: {
-      borderColor: '#FF4A56',
+      borderColor: 'black',
       borderWidth: 1,
       borderRadius: 60,
       padding: 15,
-      color: '#FF4A56',
+      color: 'black',
       fontWeight: '100',
     },
     button: {
       marginTop: 35,
       backgroundColor: '#FFF',
-      borderColor: '#FF4A56',
+      borderColor: 'black',
       borderWidth: 1,
       borderRadius: 60,
       padding: 20,
     },
     buttonText: {
-      color: '#FF4A56',
+      color: 'black',
       textAlign: 'center',
       fontWeight: '100',
     },
@@ -311,10 +335,11 @@
       color: 'white',
     },
     goBackContainer: {
-      marginTop: 20,
+      // marginTop: -20,
       alignItems: 'center',
+      color: 'black'
     },
     goBackText: {
-      color: 'white',
+      color: 'black',
     },
   });
