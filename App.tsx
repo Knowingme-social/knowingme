@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import LocalStorage from './screens/LocalStorage';
 import CheckScreen from './screens/CheckScreen';
+import Test from './screens/Test';
 
 import {useEffect, useState} from 'react';
 
@@ -40,11 +41,10 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen
-          name="TestScreen"
+          name="Search"
           component={Search}
           options={{headerShown: false}}
         /> */}
-
         {answer ? (
           <Stack.Screen
             name="Flow"
@@ -53,6 +53,11 @@ export default function App() {
           />
         ) : (
           <>
+           <Stack.Screen
+            name="Tests"
+            component={Search}
+            options={{headerShown: false}}
+          />
             <Stack.Screen
               name="Daily Question"
               component={LocalStorage}

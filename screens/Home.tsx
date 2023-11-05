@@ -1,72 +1,81 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable prettier/prettier */
-import {StyleSheet, Text, View, Pressable, Button} from 'react-native';
+import React, { useState } from 'react';
+import {Text, View, Pressable, Modal } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign'; // Import the Icon component
+import menuStyles from '../styles/menuStyles';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
-//import {useEffect, useState} from 'react';
-//import Login from './Login';
-import React from 'react';
 
-export default function Home({navigation}: any) {
+export default function Home({ navigation }) {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Welcome to KnowingMe App</Text>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.push('History')}>
-        <Text style={styles.text}>Go to History</Text>
+    <View style={menuStyles.container}>
+      <Text>Welcome to KnowingMe!</Text>
+      <Pressable style={menuStyles.menuButton} onPress={toggleMenu}>
+        <Text style={menuStyles.menuText}>Menu</Text>
       </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.push('Question')}>
-        <Text style={styles.text}>Go to Question creation</Text>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={menuVisible}
+        onRequestClose={toggleMenu}
+      >
+        <View style={menuStyles.centeredView}>
+          <View style={menuStyles.modalView}>
+          <Pressable
+              style={[menuStyles.closeButton]}
+              onPress={toggleMenu}>
+              <Icon name="close" size={24} color="black" />
+            </Pressable>
+            <Pressable
+              style={menuStyles.button}
+              onPress={() => {
+                navigation.push('History');
+                toggleMenu();
+              }}>
+              <Text style={menuStyles.text}>Go to History</Text>
+            </Pressable>
+            <Pressable
+              style={menuStyles.button}
+              onPress={() => {
+                navigation.push('Question');
+                toggleMenu();
+              }}>
+              <Text style={menuStyles.text}>Go to Question creation</Text>
+            </Pressable>
+            
+            <Pressable
+              style={menuStyles.button}
+              onPress={() => {
+                navigation.push('User Screen');
+                toggleMenu();
+              }}>
+              <Text style={menuStyles.text}>Go to User Screen</Text>
+            </Pressable>
+            <Pressable
+              style={menuStyles.button}
+              onPress={() => {
+                navigation.push('Tests');
+                toggleMenu();
+              }}>
+              <Text style={menuStyles.text}>Test</Text>
+            </Pressable>
+            <Pressable
+             style={menuStyles.button}
+            onPress={() => {
+             FIREBASE_AUTH.signOut();
+             // nextScreen();
+            navigation.navigate('Login', {screen: 'Login'});
+           }}>
+        <Text style={menuStyles.text}>Sign Out</Text>
       </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.push('User Screen')}>
-        <Text style={styles.text}>Go to User Screen</Text>
-      </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          FIREBASE_AUTH.signOut();
-          // nextScreen();
-          navigation.navigate('Login', {screen: 'Login'});
-        }}>
-        <Text style={styles.text}>Sign Out</Text>
-      </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  button: {
-    marginVertical: 4,
-    height: 45,
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: '#3CB371',
-  },
-  text: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'white',
-  },
-});
