@@ -20,6 +20,7 @@ import Search from './Search';
 import FriendRequest from './FriendRequest';
 import {ActivityIndicator} from 'react-native';
 import MissedQuestionsOfTheDay from './MissedQuestionsOfTheDay';
+import FriendsQuestions from './FriendsQuestions';
 
 const LoginStack = createNativeStackNavigator();
 
@@ -73,6 +74,11 @@ export default function LoginFlow() {
               <LoginStack.Screen
                 name="MissedQuestionsOfTheDay"
                 component={MissedQuestionsOfTheDay}
+                options={{headerShown: false}}
+              />
+              <LoginStack.Screen
+                name="FriendsQuestions"
+                component={FriendsQuestions}
                 options={{headerShown: false}}
               />
               <LoginStack.Screen

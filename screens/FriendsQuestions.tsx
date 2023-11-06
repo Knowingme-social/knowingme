@@ -16,7 +16,7 @@ export default function FriendsQuestions({navigation}) {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [questionDate, setQuestionDate] = useState('');
   const [friendsEmail, setFriendsEmail] = useState('');
-
+  const [questionId, setQuestionId] = useState('');
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, user => {
       setUser(user);
@@ -27,7 +27,7 @@ export default function FriendsQuestions({navigation}) {
     if (user) {
       getFriends();
     }
-  }, [user]); // Include user in the dependency array
+  }, [user]);
 
   const getFriends = async () => {
     if (user) {
@@ -50,13 +50,12 @@ export default function FriendsQuestions({navigation}) {
         loadQuestionsForFriends(extractedFriendIds);
       } catch (error) {
         console.error('Error fetching friends:', error);
-        // Handle the error as needed
       }
     }
   };
 
   const loadQuestionsForFriends = async friendIds => {
-    const questionsForFriends = [];
+    const unansweredQuestions = [];
 
     for (const friendId of friendIds) {
       const dailyCollectionRef = collection(FIRESTORE_DB, 'friendsQuestions');
@@ -65,41 +64,60 @@ export default function FriendsQuestions({navigation}) {
         where('email', '==', friendId),
       );
 
-      try {
-        const dailySnapshot = await getDocs(questionsFriends);
-        console.log(
-          `Friend ID: ${friendId}, Document count: ${dailySnapshot.size}`,
-        );
+      const dailySnapshot = await getDocs(questionsFriends);
 
-        dailySnapshot.forEach(doc => {
-          console.log('Retrieved doc:', doc.id, doc.data());
-          if (doc.exists()) {
-            const date = doc.data();
-            questionsForFriends.push({id: doc.id, date, ...doc.data()});
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching friends Questions data', error);
+      for (const doc of dailySnapshot.docs) {
+        const question = {id: doc.id, ...doc.data()};
+        console.log(`Checking question: ${question.id}`);
+        const isAnswered = await isQuestionAnswered(
+          friendId,
+          question.id,
+          question.date,
+        );
+        console.log(`Question ID: ${question.id}, Answered: ${isAnswered}`);
+        if (!isAnswered) {
+          unansweredQuestions.push(question);
+        }
       }
     }
 
-    setQuestions(questionsForFriends);
+    setQuestions(unansweredQuestions);
   };
 
+  const isQuestionAnswered = async (friendId, questionId, date) => {
+    const friendsAnswerCollectionRef = collection(
+      FIRESTORE_DB,
+      'friendsAnswers',
+    );
+    const friendAnswerQuery = query(
+      friendsAnswerCollectionRef,
+      where('userId', '==', user.email),
+      where('questionID', '==', questionId),
+      where('date', '==', date),
+    );
+
+    const friendAnswerSnapshot = await getDocs(friendAnswerQuery);
+    return !friendAnswerSnapshot.empty;
+  };
   const selectAnswer = async () => {
     await addDoc(collection(FIRESTORE_DB, 'friendsAnswers'), {
       usersAnswer: selectedAnswer,
+      userId: user.email,
       date: questionDate,
       friendsId: friendsEmail,
+      questionID: questionId,
     });
+    if (friendIds.length > 0) {
+      loadQuestionsForFriends(friendIds);
+    }
   };
   useEffect(() => {
-    if (selectedAnswer && questionDate && friendsEmail) {
+    if (selectedAnswer && questionDate && friendsEmail && questionId) {
       selectAnswer();
     } else {
       console.log('still waiting');
     }
-  }, [selectedAnswer, questionDate, friendsEmail]);
+  }, [selectedAnswer, questionDate, friendsEmail, questionId]);
 
   // console.log(friendIds);
   // console.log(questions);
@@ -127,12 +145,14 @@ export default function FriendsQuestions({navigation}) {
                     setSelectedAnswer('correct');
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
+                    setQuestionId(item.id);
                   } else {
                     setSelectedAnswer('incorrect');
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
+                    setQuestionId(item.id);
                   }
-                  selectAnswer();
+
                   // selectAnswer(item[answer], item.email, item.date);
                   // console.log('I was pressed');
                 }}
@@ -155,35 +175,6 @@ export default function FriendsQuestions({navigation}) {
     </View>
   );
 }
-
-// const questionCollection = collection(FIRESTORE_DB, 'dailyQuestion');
-// const questionSnapshot = await getDocs(questionCollection);
-
-// const dailyQuestions = await Promise.all(
-//   questionSnapshot.docs.map(async doc => {
-//     const item = {id: doc.id, ...doc.data()};
-//     const dateFromAnswer = await answerDate(item);
-//     return dateFromAnswer !== item.date ? item : null;
-//   }),
-// );
-
-// const loadQuestionsForFriends = async friendIds => {
-//   const questionsForFriends = [];
-//   for (const friendId of friendIds) {
-//     const answerDate = async item => {
-//       const docRef = doc(
-//         collection(FIRESTORE_DB, `answers/daily/${item.email}`),
-//         where('email', '==', friendIds),
-//       );
-//       const docSnap = await getDoc(docRef);
-//       return docSnap.exists() ? docSnap.data().date : null;
-//     };
-
-//     questionsForFriends.push(...docSnap.filter(q => q !== null));
-//   }
-
-//   setQuestions(questionsForFriends);
-// };
 
 const styles = StyleSheet.create({
   container: {

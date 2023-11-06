@@ -268,6 +268,14 @@ export default function UserScreen({navigation}) {
           <View style={styles.userInfoItem}>
             <TouchableOpacity
               onPress={() => {
+                navigation.push('FriendsQuestions');
+              }}>
+              <Text style={styles.userInfoTitle}>Friends Questions</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.userInfoItem}>
+            <TouchableOpacity
+              onPress={() => {
                 navigation.push('Search');
               }}>
               <Text style={styles.userInfoTitle}>Add</Text>

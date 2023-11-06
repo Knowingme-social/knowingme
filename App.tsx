@@ -16,6 +16,7 @@ import DailyQuestion from './screens/DailyQuestion';
 import Question from './screens/Question';
 import MissedQuestionsOfTheDay from './screens/MissedQuestionsOfTheDay';
 import FriendsQuestions from './screens/FriendsQuestions';
+import WhoKnowsWho from './screens/WhoKnowsWho';
 
 const Stack = createNativeStackNavigator();
 
@@ -93,13 +94,13 @@ export default function App() {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <Stack.Navigator>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Quiz"
-            component={FriendsQuestions}
+            component={LocalStorage}
             options={{headerShown: false}}
-          />
+          /> */}
 
-          {/* {answer ? (
+          {answer ? (
             <Stack.Screen
               name="Flow"
               component={CheckScreen}
@@ -118,7 +119,7 @@ export default function App() {
                 options={{headerShown: false}}
               />
             </>
-          )} */}
+          )}
         </Stack.Navigator>
       )}
     </NavigationContainer>
