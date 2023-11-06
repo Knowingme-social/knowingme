@@ -93,13 +93,13 @@ export default function App() {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <Stack.Navigator>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Quiz"
             component={FriendsQuestions}
             options={{headerShown: false}}
-          />
+          /> */}
 
-          {/* {answer ? (
+          {answer ? (
             <Stack.Screen
               name="Flow"
               component={CheckScreen}
@@ -118,7 +118,7 @@ export default function App() {
                 options={{headerShown: false}}
               />
             </>
-          )} */}
+          )}
         </Stack.Navigator>
       )}
     </NavigationContainer>

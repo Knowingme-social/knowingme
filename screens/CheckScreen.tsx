@@ -16,6 +16,8 @@ import UserScreen from './UserScreen';
 import ResetPassword from './ResetPassword';
 import EditProfile from './EditProfile';
 import Search from './Search';
+import Question from './Question';
+import Home from './Home';
 
 import FriendRequest from './FriendRequest';
 import {ActivityIndicator} from 'react-native';
@@ -50,16 +52,16 @@ export default function LoginFlow() {
         <LoginStack.Navigator>
           {user ? (
             <>
-              {/* <LoginStack.Screen
+              <LoginStack.Screen
                 name="Home"
                 component={Home}
                 options={{headerShown: false}}
-              /> */}
-              {/* <LoginStack.Screen
+              />
+              <LoginStack.Screen
                 name="Question"
                 component={Question}
                 options={{headerShown: false}}
-              /> */}
+              />
               <LoginStack.Screen
                 name="User Screen"
                 component={UserScreen}
@@ -70,11 +72,11 @@ export default function LoginFlow() {
                 component={History}
                 options={{headerShown: false}}
               />
-              <LoginStack.Screen
+              {/* <LoginStack.Screen
                 name="MissedQuestionsOfTheDay"
                 component={MissedQuestionsOfTheDay}
                 options={{headerShown: false}}
-              />
+              /> */}
               <LoginStack.Screen
                 name="Search"
                 component={Search}
