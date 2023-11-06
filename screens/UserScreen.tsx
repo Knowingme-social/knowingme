@@ -273,6 +273,7 @@ export default function UserScreen({navigation}) {
               <Text style={styles.userInfoTitle}>Friends Questions</Text>
             </TouchableOpacity>
           </View>
+
           <View style={styles.userInfoItem}>
             <TouchableOpacity
               onPress={() => {
@@ -294,7 +295,7 @@ export default function UserScreen({navigation}) {
         </View>
 
         <View>
-          <Text
+          {/* <Text
             style={{
               justifyContent: 'center',
               alignItems: 'center',
@@ -303,7 +304,13 @@ export default function UserScreen({navigation}) {
               fontSize: 22,
             }}>
             Answer Calendar Or Graph {'\n'} for who you know Best?
-          </Text>
+          </Text> */}
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push('WhoKnowsWho');
+            }}>
+            <Text style={styles.userInfoTitle}>Best and Worst</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

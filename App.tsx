@@ -96,7 +96,7 @@ export default function App() {
         <Stack.Navigator>
           {/* <Stack.Screen
             name="Quiz"
-            component={LocalStorage}
+            component={WhoKnowsWho}
             options={{headerShown: false}}
           /> */}
 

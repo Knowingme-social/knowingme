@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-catch-shadow */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
@@ -9,77 +12,101 @@ import {onAuthStateChanged} from 'firebase/auth';
 export default function WhoKnowsWho({navigation}) {
   const [user, setUser] = useState(null);
   const [bestFriend, setBestFriend] = useState('');
+  const [leastKnownFriend, setLeastKnownFriend] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, setUser);
-    return unsubscribe; // Remember to unsubscribe on component unmount
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, currentUser => {
+      setUser(currentUser);
+      if (!currentUser) {
+        setBestFriend('');
+        setLeastKnownFriend('');
+        setLoading(false);
+      }
+    });
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
     if (user) {
-      fetchBestFriend();
+      setLoading(true);
+      setError('');
+      fetchFriend('correct', setBestFriend);
+      fetchFriend('incorrect', setLeastKnownFriend);
     }
   }, [user]);
 
-  const fetchBestFriend = async () => {
+  const fetchFriend = async (answerType, setFriendState) => {
     const friendsCollectionRef = collection(FIRESTORE_DB, 'friends');
     const friendsQuery = query(
       friendsCollectionRef,
-      where('userId', '==', user.email),
+      where('userId', '==', user?.email),
     );
 
     try {
       const friendsSnapshot = await getDocs(friendsQuery);
-      if (!friendsSnapshot.empty) {
-        const friendsData = friendsSnapshot.docs.map(doc => doc.data());
-
-        const scoreCard = {}; // This object will hold the scores
-
-        for (const friend of friendsData) {
-          const friendsAnswersRef = collection(FIRESTORE_DB, 'friendsAnswers');
-          const correctAnswersQuery = query(
-            friendsAnswersRef,
-            where('userId', '==', user.email),
-            where('friendsId', '==', friend.friendId),
-            where('usersAnswer', '==', 'correct'),
-          );
-
-          const correctAnswersSnapshot = await getDocs(correctAnswersQuery);
-          if (!correctAnswersSnapshot.empty) {
-            scoreCard[friend.friendId] = correctAnswersSnapshot.docs.length;
-          } else {
-            console.log(
-              `No correct answers found for friendId: ${friend.friendId}`,
-            );
-          }
-        }
-
-        if (Object.keys(scoreCard).length > 0) {
-          const bestFriendId = Object.keys(scoreCard).reduce((a, b) =>
-            scoreCard[a] > scoreCard[b] ? a : b,
-          );
-          const bestFriendData = friendsData.find(
-            friend => friend.friendId === bestFriendId,
-          );
-          setBestFriend(bestFriendData.name); // Assuming there is a 'name' field in friend's data
-        } else {
-          console.log('No scores to compare.');
-        }
-      } else {
+      if (friendsSnapshot.empty) {
         console.log('No friends found.');
+        return;
+      }
+
+      const friendsData = friendsSnapshot.docs.map(doc => doc.data());
+      const scoreCard = {};
+
+      for (const friend of friendsData) {
+        const friendsAnswersRef = collection(FIRESTORE_DB, 'friendsAnswers');
+        const answersQuery = query(
+          friendsAnswersRef,
+          where('userId', '==', user.email),
+          where('friendsId', '==', friend.friendId),
+          where('usersAnswer', '==', answerType),
+        );
+
+        const answersSnapshot = await getDocs(answersQuery);
+        scoreCard[friend.friendId] = answersSnapshot.docs.length;
+      }
+
+      if (Object.keys(scoreCard).length > 0) {
+        const friendId = Object.keys(scoreCard).reduce((a, b) =>
+          scoreCard[a] > scoreCard[b] ? a : b,
+        );
+        const friendData = friendsData.find(
+          friend => friend.friendId === friendId,
+        );
+        setFriendState(friendData.friendId);
+      } else {
+        console.log(`No ${answerType} answers to compare.`);
       }
     } catch (error) {
-      console.error('Error finding best friend:', error);
+      console.error(`Error finding ${answerType} friend:`, error);
+      setError(`Error finding ${answerType} friend.`);
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text>Error: {error}</Text>
+        <Button title="Go Back" onPress={() => navigation.pop()} />
+      </View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {bestFriend ? (
-        <Text>You know {bestFriend} the best!</Text>
-      ) : (
-        <Text>Calculating who you know best...</Text>
-      )}
+      <Text>You know {bestFriend} the best!</Text>
+      <Text>You know {leastKnownFriend} the least.</Text>
       <Button title="Go Back" onPress={() => navigation.pop()} />
     </View>
   );
