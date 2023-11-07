@@ -281,20 +281,20 @@ export default function UserScreen({navigation}) {
 
           <View style={styles.userInfoWrapper}>
             <View style={styles.userInfoItem}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigation.push('MissedQuestionsOfTheDay');
                 }}>
                 <Text style={styles.userInfoTitle}>History</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={styles.userInfoItem}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigation.push('FriendsQuestions');
                 }}>
                 <Text style={styles.userInfoTitle}>Friends Questions</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View style={styles.userInfoItem}>

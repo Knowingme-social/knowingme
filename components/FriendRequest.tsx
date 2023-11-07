@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, FlatList, Pressable} from 'react-native';
-
+import {View, Text, Button, FlatList, Pressable, ScrollView, StyleSheet} from 'react-native';
+import NavBar from './bottomNav';
 import {
   collection,
   addDoc,
@@ -145,59 +145,99 @@ export default function FriendRequest({navigation}) {
     });
   };
 
-  return (
-    <View>
-      <Text>Friend Requests:</Text>
-      <FlatList
-        data={friendRequests}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>{item.senderEmail} wants to be your friend.</Text>
-            <Button
-              title="Accept"
-              onPress={() => {
-                navigation.pop();
-                acceptFriendRequest(
-                  item.id,
-                  item.senderId,
-                  item.senderEmail,
-                  item.receiverId,
-                );
-              }}
-            />
-            <Button
-              title="Decline"
-              onPress={() => {
-                navigation.pop();
-                declineFriendRequest(item.id);
-              }}
+    return (
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Friend Requests:</Text>
+            <FlatList
+              data={friendRequests}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <View style={styles.item}>
+                  <Text style={styles.itemText}>{item.senderEmail} wants to be your friend.</Text>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Accept"
+                      onPress={() => {
+                        navigation.pop();
+                        acceptFriendRequest(
+                          item.id,
+                          item.senderId,
+                          item.senderEmail,
+                          item.receiverId,
+                        );
+                      }}
+                    />
+                    <Button
+                      title="Decline"
+                      onPress={() => {
+                        navigation.pop();
+                        declineFriendRequest(item.id);
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
             />
           </View>
-        )}
-      />
 
-      <View>
-        <Pressable onPress={() => navigation.pop()}>
-          <Text style={{color: 'blue'}}> Go Back </Text>
-        </Pressable>
-      </View>
-      <Text>Friends:</Text>
-      <FlatList
-        data={friends}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>{item.friendId} is your friend.</Text>
-            <Button
-              title="Delete"
-              onPress={() => {
-                deleteFriend(item.friendId);
-              }}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Friends:</Text>
+            <FlatList
+              data={friends}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <View style={styles.item}>
+                  <Text style={styles.itemText}>{item.friendId} is your friend.</Text>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Delete"
+                      onPress={() => {
+                        deleteFriend(item.friendId);
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
             />
           </View>
-        )}
-      />
-    </View>
-  );
-}
+        </ScrollView>
+        <View style={{bottom: 0}}>
+          <NavBar navigation={navigation} />
+        </View>
+      </View>
+    );
+  }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+    },
+    section: {
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginTop: 100,
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 10,
+      backgroundColor: '#f9c2ff',
+      marginVertical: 5,
+      borderRadius: 5,
+    },
+    itemText: {
+      flex: 1,
+      marginRight: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  });
