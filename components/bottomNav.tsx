@@ -1,36 +1,39 @@
-import {StyleSheet, Text, View, Pressable, Button} from 'react-native';
-import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FIREBASE_AUTH } from '../firebaseConfig';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default function NavBar({navigation}: any) {
+export default function NavBar({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <Pressable
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.push('History')}>
-          <Icon name="history" size={24} color="white" />
-        </Pressable>
-        <Pressable
+          <MaterialIcons name="history" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.push('FriendsQuestions')}>
-          <Text style={styles.text}>Question</Text>
-        </Pressable>
-        <Pressable
+          <MaterialCommunityIcons name="progress-question" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.push('User Screen')}>
-          <Text style={styles.text}>User Screen</Text>
-        </Pressable>
-        <Pressable
+          <FontAwesome5 name="user-astronaut" size={27} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => {
             FIREBASE_AUTH.signOut();
-            navigation.navigate('Login', {screen: 'Login'});
+            navigation.navigate('Login', { screen: 'Login' });
           }}>
-          <Text style={styles.text}>Sign Out</Text>
-        </Pressable>
+          <FontAwesome5 name="sign-out-alt" size={27} color="black" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -43,12 +46,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    borderRadius: 100,
+    borderRadius: 20,
   },
   buttonContainer: {
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -63,19 +66,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
   },
   button: {
     height: 45,
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
-    backgroundColor: '#3CB371',
+    backgroundColor: '#fff',
   },
   text: {
     textAlign: 'center',
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+    color: 'black',
   },
 });

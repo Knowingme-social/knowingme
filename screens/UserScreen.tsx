@@ -32,7 +32,7 @@ import {
 } from 'firebase/firestore';
 import {oneUser} from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NavBar from './bottomNav';
+import NavBar from '../components/bottomNav';
 
 //need that to ignore annoying navigation console error/comment it out when need to test new additions
 LogBox.ignoreAllLogs();
