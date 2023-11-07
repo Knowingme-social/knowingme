@@ -7,6 +7,7 @@ import React from 'react';
 import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
 import {collection, deleteDoc, doc, onSnapshot} from 'firebase/firestore';
 import Entypo from 'react-native-vector-icons/Entypo';
+import GoBackButton from '../components/goback';
 
 export interface Daily {
   answer: string;
@@ -90,7 +91,7 @@ export default function History({navigation}) {
             keyExtractor={(dailyData: Daily) => dailyData.id}
           />
         )}
-        <Button title="Go Back" onPress={() => navigation.pop()}/>
+        <GoBackButton navigation={navigation}  />
       </View>
     );
 }

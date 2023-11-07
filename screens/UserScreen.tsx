@@ -18,6 +18,8 @@ import {
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
@@ -33,6 +35,7 @@ import {
 import {oneUser} from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from '../components/bottomNav';
+import { Share } from 'react-native';
 
 //need that to ignore annoying navigation console error/comment it out when need to test new additions
 LogBox.ignoreAllLogs();
@@ -52,7 +55,14 @@ export default function UserScreen({navigation}) {
 
   //needs to be set to whatever the question of the day is.
   //let DailyQuestion = 'What is your NOT YOUR favorite Pizza topping';
-
+  function shareInvite() {
+    if (uid) {
+      const referralLink = `https://Knowingme.io/invite?referral_uid=${uid}`;
+      Share.share({
+        message: `Join me on Knowingme! Use my link: ${referralLink}`,
+      });
+    }
+  }
   //pulls in answer of the day from the async storage.
   useEffect(() => {
     const getData = async () => {
@@ -234,6 +244,17 @@ export default function UserScreen({navigation}) {
             About: Just an average Joe who likes to hike and bike, like a Mike!
           </Text> */}
           <View style={styles.userBtnWrapper}>
+          <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: -190, 
+            right: 10, 
+            zIndex: 1
+          }}
+          onPress={shareInvite}>
+          <Icon name="share-sharp" size={30} color="black" />
+          <Text>share</Text>
+        </TouchableOpacity>
             <TouchableOpacity
               style={styles.userBtn}
               onPress={() => navigation.push('Edit Profile')}>
