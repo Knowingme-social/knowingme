@@ -4,7 +4,7 @@ import React from 'react';
 
 const GoBackButton = ({ navigation }) => {
   return (
-    <View style={{ position: 'absolute', top: 70, left: 5, flexDirection: 'row' }}>
+    <View style={{ position: 'absolute', top: 22, left: 5, flexDirection: 'row' }}>
       <TouchableOpacity onPress={() => navigation.pop()}>
         <Icon name="back" size={54}/>
       </TouchableOpacity>

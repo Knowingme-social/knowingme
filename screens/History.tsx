@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 20, // Rounded top left corner
     borderBottomEndRadius: 20, // Rounded bottom right corner (optional)
     borderBottomStartRadius: 20, // Rounded bottom left corner (optional)
-    marginTop: 50, // Add some margin at the top
+    marginTop: 0, // Add some margin at the top
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

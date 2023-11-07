@@ -274,27 +274,11 @@ export default function UserScreen({navigation}) {
             </TouchableOpacity>
           </View>
           <View>
-            {/* <Pressable onPress={() => navigation.pop()}>
-              <Text style={{color: 'blue'}}> Go Back </Text>
-            </Pressable> */}
           </View>
-
           <View style={styles.userInfoWrapper}>
             <View style={styles.userInfoItem}>
-              {/* <TouchableOpacity
-                onPress={() => {
-                  navigation.push('MissedQuestionsOfTheDay');
-                }}>
-                <Text style={styles.userInfoTitle}>History</Text>
-              </TouchableOpacity> */}
             </View>
             <View style={styles.userInfoItem}>
-              {/* <TouchableOpacity
-                onPress={() => {
-                  navigation.push('FriendsQuestions');
-                }}>
-                <Text style={styles.userInfoTitle}>Friends Questions</Text>
-              </TouchableOpacity> */}
             </View>
 
             <View style={styles.userInfoItem}>
@@ -318,16 +302,6 @@ export default function UserScreen({navigation}) {
           </View>
 
           <View>
-            {/* <Text
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontWeight: 'bold',
-                marginTop: 40,
-                fontSize: 22,
-              }}>
-              Answer Calendar Or Graph {'\n'} for who you know Best?
-            </Text> */}
             <TouchableOpacity
               onPress={() => {
                 navigation.push('WhoKnowsWho');
@@ -337,7 +311,7 @@ export default function UserScreen({navigation}) {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <NavBar navigation={navigation} />
+     
     </>
   );
 }
@@ -346,18 +320,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
   },
   userImg: {
     height: 150,
     width: 150,
     borderRadius: 75,
+    padding: 85,
+    marginBottom: 10,
   },
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   aboutUser: {
     fontSize: 12,
@@ -373,7 +348,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   userBtn: {
-    borderColor: '#2e64e5',
+    borderColor: 'black',
     borderWidth: 2,
     borderRadius: 3,
     paddingVertical: 8,
@@ -381,7 +356,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   userBtnTxt: {
-    color: '#2e64e5',
+    color: 'black',
   },
   userInfoWrapper: {
     flexDirection: 'row',

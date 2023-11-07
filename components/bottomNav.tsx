@@ -1,43 +1,68 @@
-
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { FIREBASE_AUTH } from '../firebaseConfig';
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import React from 'react';
+import { FIREBASE_AUTH } from '../firebaseConfig';
+import {StyleSheet, Text, View, Pressable, Button} from 'react-native';
+import History from '../screens/History'; // Import your HistoryScreen
+import FriendsQuestions from '../screens/FriendsQuestions';
+import Login from '../screens/Login';
+import UserScreen from '../screens/UserScreen';
 
+const Tab = createBottomTabNavigator();
 
-export default function NavBar({ navigation }: any) {
+export default function NavBar() {
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.push('History')}>
-          <MaterialIcons name="history" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.push('FriendsQuestions')}>
-          <MaterialCommunityIcons name="progress-question" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.push('User Screen')}>
-          <FontAwesome5 name="user-astronaut" size={27} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            FIREBASE_AUTH.signOut();
-            navigation.navigate('Login', { screen: 'Login' });
-          }}>
-          <FontAwesome5 name="sign-out-alt" size={27} color="black" />
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Tab.Navigator
+      initialRouteName="User"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'History') {
+            iconName = focused ? 'history' : 'history';
+            return <MaterialIcons name={iconName} size={size} color={color} />;
+          } else if (route.name === 'FriendsQuestions') {
+            iconName = focused ? 'progress-question' : 'progress-question';
+            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+          } else if (route.name === 'User') {
+            iconName = focused ? 'user-astronaut' : 'user-astronaut';
+            return <FontAwesome5 name={iconName} size={size} color={color} />;
+          }else if (route.name === 'SignOut') {
+            iconName = focused ? 'sign-in-alt' : 'sign-in-alt';
+            return <FontAwesome5 name={iconName} size={size} color={color} />;
+          }
+
+          // You can return any component that you like here!
+          return <FontAwesome5 name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="User" component={UserScreen} />
+      <Tab.Screen name="History" component={History} />
+      <Tab.Screen name="FriendsQuestions" component={FriendsQuestions} />
+      {/* Replace LoginScreen with the actual component you navigate to on sign out */}
+      <Tab.Screen name="SignOut" component={Login} options={{
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName = focused ? 'sign-in-alt' : 'sign-in-alt';
+          return <FontAwesome5 name={iconName} size={size} color={color} />;
+        }
+      }} listeners={({ navigation }) => ({
+        tabPress: e => {
+          e.preventDefault();
+
+          // Sign out logic
+          FIREBASE_AUTH.signOut();
+          navigation.navigate('Login');
+        },
+      })} />
+    </Tab.Navigator>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
