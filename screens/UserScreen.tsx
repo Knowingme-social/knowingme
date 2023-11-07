@@ -32,6 +32,7 @@ import {
 } from 'firebase/firestore';
 import {oneUser} from './EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NavBar from './bottomNav';
 
 //need that to ignore annoying navigation console error/comment it out when need to test new additions
 LogBox.ignoreAllLogs();
@@ -216,104 +217,107 @@ export default function UserScreen({navigation}) {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        showsVerticalScrollIndicator={false}>
-        <Image style={styles.userImg} source={profilePic} />
-        <Text style={styles.userName}>
-          {userData?.firstName} {userData?.lastName}
-        </Text>
-        {/* <Text style={styles.aboutUser}>
-          About: Just an average Joe who likes to hike and bike, like a Mike!
-        </Text> */}
-        <View style={styles.userBtnWrapper}>
-          <TouchableOpacity
-            style={styles.userBtn}
-            onPress={() => navigation.push('Edit Profile')}>
-            <Text style={styles.userBtnTxt}>Edit Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.userBtn}
-            onPress={() => {
-              FIREBASE_AUTH.signOut();
-              GoogleSignin.signOut();
-              navigation.push('Login');
-              // navigation.navigate(() => {
-              //   Login;
-              //});
-            }}>
-            <Text style={styles.userBtnTxt}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          {/* <Pressable onPress={() => navigation.pop()}>
-            <Text style={{color: 'blue'}}> Go Back </Text>
-          </Pressable> */}
-        </View>
-
-        <View style={styles.userInfoWrapper}>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('MissedQuestionsOfTheDay');
-              }}>
-              <Text style={styles.userInfoTitle}>History</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('FriendsQuestions');
-              }}>
-              <Text style={styles.userInfoTitle}>Friends Questions</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('Search');
-              }}>
-              <Text style={styles.userInfoTitle}>Add</Text>
-              <Text style={styles.userInfoSubTitle}>Friends</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('FriendRequest');
-              }}>
-              <Text style={styles.userInfoTitle}> Friend</Text>
-              <Text style={styles.userInfoSubTitle}>Requests</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View>
-          {/* <Text
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontWeight: 'bold',
-              marginTop: 40,
-              fontSize: 22,
-            }}>
-            Answer Calendar Or Graph {'\n'} for who you know Best?
+    <>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          showsVerticalScrollIndicator={false}>
+          <Image style={styles.userImg} source={profilePic} />
+          <Text style={styles.userName}>
+            {userData?.firstName} {userData?.lastName}
+          </Text>
+          {/* <Text style={styles.aboutUser}>
+            About: Just an average Joe who likes to hike and bike, like a Mike!
           </Text> */}
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push('WhoKnowsWho');
-            }}>
-            <Text style={styles.userInfoTitle}>Best and Worst</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          <View style={styles.userBtnWrapper}>
+            <TouchableOpacity
+              style={styles.userBtn}
+              onPress={() => navigation.push('Edit Profile')}>
+              <Text style={styles.userBtnTxt}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.userBtn}
+              onPress={() => {
+                FIREBASE_AUTH.signOut();
+                GoogleSignin.signOut();
+                navigation.push('Login');
+                // navigation.navigate(() => {
+                //   Login;
+                //});
+              }}>
+              <Text style={styles.userBtnTxt}>Sign Out</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            {/* <Pressable onPress={() => navigation.pop()}>
+              <Text style={{color: 'blue'}}> Go Back </Text>
+            </Pressable> */}
+          </View>
+
+          <View style={styles.userInfoWrapper}>
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('MissedQuestionsOfTheDay');
+                }}>
+                <Text style={styles.userInfoTitle}>History</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('FriendsQuestions');
+                }}>
+                <Text style={styles.userInfoTitle}>Friends Questions</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Search');
+                }}>
+                <Text style={styles.userInfoTitle}>Add</Text>
+                <Text style={styles.userInfoSubTitle}>Friends</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('FriendRequest');
+                }}>
+                <Text style={styles.userInfoTitle}> Friend</Text>
+                <Text style={styles.userInfoSubTitle}>Requests</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View>
+            {/* <Text
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontWeight: 'bold',
+                marginTop: 40,
+                fontSize: 22,
+              }}>
+              Answer Calendar Or Graph {'\n'} for who you know Best?
+            </Text> */}
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push('WhoKnowsWho');
+              }}>
+              <Text style={styles.userInfoTitle}>Best and Worst</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+      <NavBar navigation={navigation} />
+    </>
   );
 }
 
