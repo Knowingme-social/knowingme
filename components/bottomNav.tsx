@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { FIREBASE_AUTH } from '../firebaseConfig';
@@ -9,6 +10,7 @@ import History from '../screens/History'; // Import your HistoryScreen
 import FriendsQuestions from '../screens/FriendsQuestions';
 import Login from '../screens/Login';
 import UserScreen from '../screens/UserScreen';
+import WhoKnowsWho from '../screens/WhoKnowsWho';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,9 +31,9 @@ export default function NavBar() {
           } else if (route.name === 'User') {
             iconName = focused ? 'user-astronaut' : 'user-astronaut';
             return <FontAwesome5 name={iconName} size={size} color={color} />;
-          }else if (route.name === 'SignOut') {
-            iconName = focused ? 'sign-in-alt' : 'sign-in-alt';
-            return <FontAwesome5 name={iconName} size={size} color={color} />;
+          }else if (route.name === 'WhoKnowsWho') {
+            iconName = focused ? 'users-rays' : 'users-rays';
+            return <FontAwesome6 name={iconName} size={size} color={color} />;
           }
 
           // You can return any component that you like here!
@@ -41,24 +43,12 @@ export default function NavBar() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="User" component={UserScreen} />
-      <Tab.Screen name="History" component={History} />
-      <Tab.Screen name="FriendsQuestions" component={FriendsQuestions} />
+      <Tab.Screen name="User" component={UserScreen} options={{headerShown: false}} />
+      <Tab.Screen name="History" component={History} options={{headerShown: false}} />
+      <Tab.Screen name="FriendsQuestions" component={FriendsQuestions} options={{headerShown: false}} />
+      
       {/* Replace LoginScreen with the actual component you navigate to on sign out */}
-      <Tab.Screen name="SignOut" component={Login} options={{
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName = focused ? 'sign-in-alt' : 'sign-in-alt';
-          return <FontAwesome5 name={iconName} size={size} color={color} />;
-        }
-      }} listeners={({ navigation }) => ({
-        tabPress: e => {
-          e.preventDefault();
-
-          // Sign out logic
-          FIREBASE_AUTH.signOut();
-          navigation.navigate('Login');
-        },
-      })} />
+      <Tab.Screen name="WhoKnowsWho" component={WhoKnowsWho} options={{headerShown: false}} />
     </Tab.Navigator>
   );
 }

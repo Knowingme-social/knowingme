@@ -248,7 +248,7 @@ export default function UserScreen({navigation}) {
           style={{
             position: 'absolute',
             top: -190, 
-            right: 10, 
+            right: 30, 
             zIndex: 1
           }}
           onPress={shareInvite}>
@@ -300,14 +300,7 @@ export default function UserScreen({navigation}) {
               </TouchableOpacity>
             </View>
           </View>
-
           <View>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('WhoKnowsWho');
-              }}>
-              <Text style={styles.userInfoTitle}>Best and Worst</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -371,11 +364,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    marginRight: 70,
     textAlign: 'center',
   },
   userInfoSubTitle: {
     fontSize: 12,
     color: '#666',
     textAlign: 'center',
+    marginRight: 66,
   },
 });

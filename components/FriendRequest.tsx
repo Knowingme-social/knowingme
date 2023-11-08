@@ -16,6 +16,7 @@ import {
 } from 'firebase/firestore';
 import {onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import GoBackButton from './goback';
 
 export default function FriendRequest({navigation}) {
   const [user, setUser] = useState(null);
@@ -203,8 +204,8 @@ export default function FriendRequest({navigation}) {
             />
           </View>
         </ScrollView>
-        <View style={{bottom: 0}}>
-          <NavBar navigation={navigation} />
+        <View style={{bottom: 820}}>
+          <GoBackButton navigation={navigation} />
         </View>
       </View>
     );

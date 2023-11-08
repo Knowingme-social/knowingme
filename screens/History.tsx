@@ -91,7 +91,6 @@ export default function History({navigation}) {
             keyExtractor={(dailyData: Daily) => dailyData.id}
           />
         )}
-        <GoBackButton navigation={navigation}  />
       </View>
     );
 }
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%', // Make the header full-width
-    padding: 20,
+    padding: 80,
     backgroundColor: '#c0b283', // Gold-like background
     borderTopEndRadius: 20, // Rounded top right corner
     borderTopStartRadius: 20, // Rounded top left corner
@@ -125,6 +124,7 @@ const styles = StyleSheet.create({
     color: '#003300', // Deep green color
     fontFamily: 'Roboto', // Consider using a custom vintage font
     fontWeight: 'bold',
+    marginBottom: -40,
   },
   QuestionText: {
     flex: 1,

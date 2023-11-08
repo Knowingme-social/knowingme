@@ -4,17 +4,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {onAuthStateChanged} from 'firebase/auth';
 
-export default function WhoKnowsWho({navigation}) {
+export default function WhoKnowsWhoCard (){
+  const [selectedTab, setSelectedTab] = useState('bestKnownByYou');
   const [user, setUser] = useState(null);
   const [bestFriend, setBestFriend] = useState('');
   const [leastKnownFriend, setLeastKnownFriend] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const renderContent = () => {
+    switch (selectedTab) {
+      case 'bestKnownByYou':
+        return <Text>you know {bestFriend} the best</Text>;
+      case 'bestKnownByOthers':
+        return <Text> {leastKnownFriend} knows you the best</Text>;
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, currentUser => {
@@ -104,18 +116,73 @@ export default function WhoKnowsWho({navigation}) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>You know {bestFriend} the best!</Text>
-      <Text>You know {leastKnownFriend} the least.</Text>
-      <Button title="Go Back" onPress={() => navigation.pop()} />
+    <View style={styles.card}>
+      <View style={styles.tabs}>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'bestKnownByYou' && styles.activeTab, styles.leftTab]}
+          onPress={() => setSelectedTab('bestKnownByYou')}
+        >
+          <Text style={styles.tabText}>Who You Know the Best</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'bestKnownByOthers' && styles.activeTab, styles.rightTab]}
+          onPress={() => setSelectedTab('bestKnownByOthers')}
+        >
+          <Text style={styles.tabText}>Who Knows You the Best</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.content}>
+        {renderContent()}
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  card: {
+    backgroundColor: '#fff',
+    fontFamily: 'Times New Roman',
+    // marginHorizontal: 20, // Added horizontal margin to provide space on both sides
+    marginTop: 100,
+    shadowColor: '#000', // Added shadow for a nice elevation effect
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height: 700,
+    overflow: 'hidden',
+  },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'center', // Adjusted for center alignment
+    backgroundColor: '#fff', // Corrected color from '#white' to '#fff'
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginHorizontal: 20,
+  },
+  tab: {
+    flex: 1, // Makes the tabs fill the container equally
+    paddingVertical: 50,
+    paddingHorizontal: 20,
     alignItems: 'center',
+    justifyContent: 'center', // Center the text vertically and horizontally
+  },
+  leftTab: {
+    borderTopLeftRadius: 20, // Rounded corners for the left tab
+    borderBottomLeftRadius: 20,
+  },
+  rightTab: {
+    borderTopRightRadius: 20, // Rounded corners for the right tab
+    borderBottomRightRadius: 20,
+  },
+  activeTab: {
+    backgroundColor: 'black',
+  },
+  tabText: {
+    color: '#ffe0de',
+    fontWeight: 'bold',
+  },
+  content: {
+    padding: 20,
   },
 });
