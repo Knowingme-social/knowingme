@@ -22,12 +22,39 @@ export default function FriendRequest({navigation}) {
   const [users, setUsers] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
+
+  const uid = FIREBASE_AUTH.currentUser?.uid;
 
   //check for authenticated user
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, user => {
       setUser(user);
     });
+  }, []);
+
+  const fetchCurrentUserDetails = async () => {
+    try {
+      const getUserData = query(
+        collection(FIRESTORE_DB, 'users'),
+        where('userId', '==', uid),
+      );
+
+      const snapshot = await getDocs(getUserData);
+      if (!snapshot.empty) {
+        const userData = snapshot.docs[0].data(); // Assuming only one document will match
+        setUserInfo(userData);
+      } else {
+        console.log('No user with the given details found');
+        setUserInfo(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserDetails();
   }, []);
 
   // bring in Users and friend Requests and friends in order to mutate the data
@@ -91,6 +118,9 @@ export default function FriendRequest({navigation}) {
     senderId,
     senderEmail,
     receiverId,
+    firstname,
+    lastname,
+    displayname,
   ) => {
     // Update the friend request status to "accepted"
     const friendRequestsCollection = collection(FIRESTORE_DB, 'friendRequests');
@@ -100,12 +130,19 @@ export default function FriendRequest({navigation}) {
     // Add both users as friends (you can create a separate collection for friends)
     const friendsCollection = collection(FIRESTORE_DB, 'friends');
     await addDoc(friendsCollection, {
+      requestId,
       friendId: senderEmail,
       userId: receiverId,
+      firstName: firstname,
+      lastName: lastname,
+      displayname: displayname,
     });
     await addDoc(friendsCollection, {
       friendId: receiverId,
       userId: senderEmail,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      displayName: userInfo.displayName,
     });
   };
 
@@ -153,7 +190,9 @@ export default function FriendRequest({navigation}) {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <View>
-            <Text>{item.senderEmail} wants to be your friend.</Text>
+            <Text>
+              {item.firstName + ' ' + item.lastName} wants to be your friend.
+            </Text>
             <Button
               title="Accept"
               onPress={() => {
@@ -163,6 +202,9 @@ export default function FriendRequest({navigation}) {
                   item.senderId,
                   item.senderEmail,
                   item.receiverId,
+                  item.firstName,
+                  item.lastName,
+                  item.displayName,
                 );
               }}
             />
@@ -188,7 +230,7 @@ export default function FriendRequest({navigation}) {
         keyExtractor={item => item.id}
         renderItem={({item}) => (
           <View>
-            <Text>{item.friendId} is your friend.</Text>
+            <Text>{item.firstName + ' ' + item.lastName} is your friend.</Text>
             <Button
               title="Delete"
               onPress={() => {

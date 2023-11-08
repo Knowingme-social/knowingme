@@ -48,7 +48,9 @@ export default function UserScreen({navigation}) {
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
 
   const uid = FIREBASE_AUTH.currentUser?.uid;
-
+  const firstname = userData?.firstName;
+  const lastname = userData?.lastName;
+  const displayname = userData?.displayName;
   //needs to be set to whatever the question of the day is.
   //let DailyQuestion = 'What is your NOT YOUR favorite Pizza topping';
 
@@ -137,6 +139,9 @@ export default function UserScreen({navigation}) {
           timestamp: serverTimestamp(),
           email: FIREBASE_AUTH.currentUser?.email,
           userId: uid,
+          firstName: firstname,
+          lastName: lastname,
+          displayName: displayname,
         });
 
         await setDoc(friendsQuestions, {
@@ -151,6 +156,9 @@ export default function UserScreen({navigation}) {
           timestamp: serverTimestamp(),
           email: FIREBASE_AUTH.currentUser?.email,
           userId: uid,
+          firstName: firstname,
+          lastName: lastname,
+          displayName: displayname,
         });
         console.log(`Answer for ${currentDate} saved.`);
       } catch (error) {
@@ -159,6 +167,9 @@ export default function UserScreen({navigation}) {
     };
 
     if (
+      firstname &&
+      lastname &&
+      displayname &&
       uid &&
       question &&
       answer &&
@@ -182,6 +193,9 @@ export default function UserScreen({navigation}) {
     answerSubmitted,
     question,
     uid,
+    firstname,
+    lastname,
+    displayname,
   ]);
 
   // pulls in user data from DB
@@ -201,7 +215,7 @@ export default function UserScreen({navigation}) {
             ...doc.data(),
           } as oneUser);
         });
-        setUserData(userInfo[0] || null); // Update userData state
+        setUserData(userInfo[0] || null);
       });
 
       // Return the subscriber function to clean up when the component unmounts

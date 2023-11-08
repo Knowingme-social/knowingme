@@ -15,11 +15,13 @@ import {
   getDoc,
   setDoc,
   serverTimestamp,
+  where,
+  query,
 } from 'firebase/firestore';
-import {options} from '@react-native-community/cli-platform-android/build/commands/buildAndroid';
 
 export default function MissedQuestionsOfTheDay({navigation}) {
   const [questions, setQuestions] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [selectedQuestion, setSelectedQuestion] = useState({
     answer: '',
@@ -31,6 +33,30 @@ export default function MissedQuestionsOfTheDay({navigation}) {
   const [answerOption3, setAnsweroption3] = useState('');
   const [answerOption4, setAnsweroption4] = useState('');
   const uid = FIREBASE_AUTH.currentUser?.uid;
+
+  const fetchCurrentUserDetails = async () => {
+    try {
+      const getUserData = query(
+        collection(FIRESTORE_DB, 'users'),
+        where('userId', '==', uid),
+      );
+
+      const snapshot = await getDocs(getUserData);
+      if (!snapshot.empty) {
+        const userData = snapshot.docs[0].data(); // Assuming only one document will match
+        setUserInfo(userData);
+      } else {
+        console.log('No user with the given details found');
+        setUserInfo(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserDetails();
+  }, []);
 
   const loadQuestions = async () => {
     const answerDate = async item => {
@@ -97,6 +123,10 @@ export default function MissedQuestionsOfTheDay({navigation}) {
         timestamp: serverTimestamp(),
         email: FIREBASE_AUTH.currentUser?.email,
         userId: uid,
+
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        displayName: userInfo.displayName,
       });
       await setDoc(friendsQuestions, {
         questionOfTheDay: question,
@@ -110,6 +140,10 @@ export default function MissedQuestionsOfTheDay({navigation}) {
         timestamp: serverTimestamp(),
         email: FIREBASE_AUTH.currentUser?.email,
         userId: uid,
+
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        displayName: userInfo.displayName,
       });
       console.log(`Answer for ${date} saved.`);
     } catch (error) {

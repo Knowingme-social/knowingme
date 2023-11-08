@@ -17,6 +17,10 @@ export default function FriendsQuestions({navigation}) {
   const [questionDate, setQuestionDate] = useState('');
   const [friendsEmail, setFriendsEmail] = useState('');
   const [questionId, setQuestionId] = useState('');
+  const [questionLastName, setQuestionlastName] = useState('');
+  const [questionFirstName, setQuestionFirstName] = useState('');
+  const [questionDisplayName, setQuestionDisplayName] = useState('');
+
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, user => {
       setUser(user);
@@ -106,18 +110,37 @@ export default function FriendsQuestions({navigation}) {
       date: questionDate,
       friendsId: friendsEmail,
       questionID: questionId,
+      lastName: questionLastName,
+      firstName: questionFirstName,
+      displayName: questionDisplayName,
     });
     if (friendIds.length > 0) {
       loadQuestionsForFriends(friendIds);
     }
   };
   useEffect(() => {
-    if (selectedAnswer && questionDate && friendsEmail && questionId) {
+    if (
+      selectedAnswer &&
+      questionDate &&
+      friendsEmail &&
+      questionId &&
+      questionLastName &&
+      questionFirstName &&
+      questionDisplayName
+    ) {
       selectAnswer();
     } else {
       console.log('still waiting');
     }
-  }, [selectedAnswer, questionDate, friendsEmail, questionId]);
+  }, [
+    selectedAnswer,
+    questionDate,
+    friendsEmail,
+    questionId,
+    questionFirstName,
+    questionLastName,
+    questionDisplayName,
+  ]);
 
   // console.log(friendIds);
   // console.log(questions);
@@ -130,7 +153,9 @@ export default function FriendsQuestions({navigation}) {
         questionsToDisplay.map((item, index) => (
           <View key={index} style={styles.questionContainer}>
             <Text style={styles.questionText}>{item.questionOfTheDay}</Text>
-            <Text style={styles.questionText}>{item.email}</Text>
+            <Text style={styles.questionText}>
+              {item.firstName + ' ' + item.lastName}
+            </Text>
 
             {[
               'answerOption1',
@@ -146,11 +171,17 @@ export default function FriendsQuestions({navigation}) {
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
                     setQuestionId(item.id);
+                    setQuestionlastName(item.lastName);
+                    setQuestionFirstName(item.firstName);
+                    setQuestionDisplayName(item.displayName);
                   } else {
                     setSelectedAnswer('incorrect');
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
                     setQuestionId(item.id);
+                    setQuestionlastName(item.lastName);
+                    setQuestionFirstName(item.firstName);
+                    setQuestionDisplayName(item.displayName);
                   }
 
                   // selectAnswer(item[answer], item.email, item.date);

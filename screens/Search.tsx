@@ -13,16 +13,24 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
-import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
+import {
+  collection,
+  where,
+  query,
+  getDocs,
+  addDoc,
+  doc,
+} from 'firebase/firestore';
 //import {oneUser} from './EditProfile';
 
 export default function Search({navigation}) {
   // Use an array to store user data
   const [users, setUsers] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
   const uid = FIREBASE_AUTH.currentUser?.uid;
   const email = FIREBASE_AUTH.currentUser?.email;
 
@@ -49,9 +57,33 @@ export default function Search({navigation}) {
     }
   };
 
+  const fetchCurrentUserDetails = async () => {
+    try {
+      const getUserData = query(
+        collection(FIRESTORE_DB, 'users'),
+        where('userId', '==', uid),
+      );
+
+      const snapshot = await getDocs(getUserData);
+      if (!snapshot.empty) {
+        const userData = snapshot.docs[0].data(); // Assuming only one document will match
+        setUserInfo(userData);
+      } else {
+        console.log('No user with the given details found');
+        setUserInfo(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserDetails();
+  }, []);
+
   //console.log(users);
 
-  const sendFriendRequest = async receiverId => {
+  const sendFriendRequest = async (receiverId, userId) => {
     try {
       if (uid) {
         const friendRequestsCollection = collection(
@@ -71,10 +103,14 @@ export default function Search({navigation}) {
         if (existingRequests.size === 0) {
           // If no existing requests are found, send the friend request
           await addDoc(friendRequestsCollection, {
-            senderId: uid,
+            // senderId: uid,
             receiverId,
             status: 'pending',
             senderEmail: email,
+            receiverUid: userId,
+            firstName: userInfo.firstName,
+            lastName: userInfo.lastName,
+            displayName: userInfo.displayName,
           });
           console.log('Friend request sent');
         } else {
@@ -117,7 +153,7 @@ export default function Search({navigation}) {
               title="Send Friend Request"
               onPress={() => {
                 console.log('sent');
-                sendFriendRequest(item.email);
+                sendFriendRequest(item.email, item.userId);
                 navigation.pop();
               }}
             />
