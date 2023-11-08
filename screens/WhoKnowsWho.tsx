@@ -3,11 +3,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {onAuthStateChanged} from 'firebase/auth';
+
 
 export default function WhoKnowsWhoCard (){
   const [selectedTab, setSelectedTab] = useState('bestKnownByYou');
@@ -16,6 +17,26 @@ export default function WhoKnowsWhoCard (){
   const [leastKnownFriend, setLeastKnownFriend] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+
+ // Add these lines for animation
+ const animation = useRef(new Animated.Value(0)).current;
+
+ useEffect(() => {
+   Animated.spring(animation, {
+     toValue: selectedTab === 'bestKnownByYou' ? 0 : 1,
+     useNativeDriver: true,
+   }).start();
+ }, [selectedTab, animation]);
+
+ const slideInterpolate = animation.interpolate({
+   inputRange: [0, 1],
+   outputRange: [-69, 74], // Adjust this based on your tab's width
+ });
+
+ const animatedIndicatorStyle = {
+   transform: [{ translateX: slideInterpolate }],
+ };
 
   const renderContent = () => {
     switch (selectedTab) {
@@ -55,6 +76,7 @@ export default function WhoKnowsWhoCard (){
       friendsCollectionRef,
       where('userId', '==', user?.email),
     );
+    
 
     try {
       const friendsSnapshot = await getDocs(friendsQuery);
@@ -96,6 +118,7 @@ export default function WhoKnowsWhoCard (){
     } finally {
       setLoading(false);
     }
+    
   };
 
   if (error) {
@@ -118,18 +141,21 @@ export default function WhoKnowsWhoCard (){
   return (
     <View style={styles.card}>
       <View style={styles.tabs}>
+        {/* The tabs themselves stay the same color */}
         <TouchableOpacity
-          style={[styles.tab, selectedTab === 'bestKnownByYou' && styles.activeTab, styles.leftTab]}
+          style={[styles.tab, styles.leftTab]}
           onPress={() => setSelectedTab('bestKnownByYou')}
         >
-          <Text style={styles.tabText}>Who You Know the Best</Text>
+          <Text style={[styles.tabText, selectedTab === 'bestKnownByYou' && styles.activeTabText]}>Who You Know</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, selectedTab === 'bestKnownByOthers' && styles.activeTab, styles.rightTab]}
+          style={[styles.tab, styles.rightTab]}
           onPress={() => setSelectedTab('bestKnownByOthers')}
         >
-          <Text style={styles.tabText}>Who Knows You the Best</Text>
+          <Text style={[styles.tabText, selectedTab === 'bestKnownByOthers' && styles.activeTabText]}>Who Knows You</Text>
         </TouchableOpacity>
+        {/* Animated indicator */}
+        <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
       </View>
       <View style={styles.content}>
         {renderContent()}
@@ -139,6 +165,14 @@ export default function WhoKnowsWhoCard (){
 };
 
 const styles = StyleSheet.create({
+  slider: {
+    position: 'absolute',
+    height: 20,
+    width: '50%', // Assuming each tab is half the width of the container
+    backgroundColor: 'black', // Active tab color
+    borderRadius: 20, // Match your tabs' borderRadius
+    // Add other styling if needed
+  },
   card: {
     backgroundColor: '#fff',
     fontFamily: 'Times New Roman',
@@ -151,21 +185,38 @@ const styles = StyleSheet.create({
     elevation: 5,
     height: 700,
     overflow: 'hidden',
+    zIndex: -2, 
   },
   tabs: {
     flexDirection: 'row',
     justifyContent: 'center', // Adjusted for center alignment
     backgroundColor: '#fff', // Corrected color from '#white' to '#fff'
-    borderRadius: 20,
+    borderRadius: 30,
     overflow: 'hidden',
-    marginHorizontal: 20,
+    marginHorizontal: 60,
   },
   tab: {
-    flex: 1, // Makes the tabs fill the container equally
-    paddingVertical: 50,
-    paddingHorizontal: 20,
+    flex: 1,
+    paddingVertical: 45,
     alignItems: 'center',
-    justifyContent: 'center', // Center the text vertically and horizontally
+    justifyContent: 'center',
+    // Tabs have their default color
+    backgroundColor: 'grey',
+  },
+  activeTabText: {
+    color: 'white', // Text color for active tab
+    fontWeight: 'bold',
+  },
+  tabText: {
+    color: '#ffe0de', // Default tab text color
+  },
+  indicator: {
+    position: 'absolute',
+    bottom: 0,
+    height: 5,
+    width: '50%', // Set this to match the width of your tabs
+    backgroundColor: 'black', // Indicator color
+    borderRadius: 2,
   },
   leftTab: {
     borderTopLeftRadius: 20, // Rounded corners for the left tab
@@ -174,13 +225,6 @@ const styles = StyleSheet.create({
   rightTab: {
     borderTopRightRadius: 20, // Rounded corners for the right tab
     borderBottomRightRadius: 20,
-  },
-  activeTab: {
-    backgroundColor: 'black',
-  },
-  tabText: {
-    color: '#ffe0de',
-    fontWeight: 'bold',
   },
   content: {
     padding: 20,
