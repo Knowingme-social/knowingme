@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable react/self-closing-comp */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import {
   View,
   Text,
@@ -19,7 +13,6 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {
   collection,
-  deleteDoc,
   doc,
   where,
   onSnapshot,
@@ -49,7 +42,7 @@ export default function EditProfile({navigation}) {
   const [newLast, setNewLast] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPhone, setNewPhone] = useState('');
-  const [image, setImage] = useState(null || userData?.picture);
+  const [image, setImage] = useState(userData?.picture || null);
 
   const uid = FIREBASE_AUTH.currentUser?.uid;
 
@@ -100,15 +93,15 @@ export default function EditProfile({navigation}) {
         where('userId', '==', uid),
       );
 
+      // Ensure that you update state with the new data
       const subscriber = onSnapshot(userInfoQuery, snapshot => {
-        // Ensure that you update state with the new data
         const userInfo: oneUser[] = [];
         snapshot.forEach(doc => {
           userInfo.push({
             ...doc.data(),
           } as oneUser);
         });
-        setUserData(userInfo[0] || null); // Update userData state
+        setUserData(userInfo[0] || null);
       });
 
       // Return the subscriber function to clean up when the component unmounts
@@ -145,7 +138,6 @@ export default function EditProfile({navigation}) {
         console.log('Updated');
         Alert.alert('Updated successfully');
       } else {
-        // Handle the case where no document matches the query
         console.log('No document matches the query');
         Alert.alert('Document does not exist');
       }
@@ -195,8 +187,6 @@ export default function EditProfile({navigation}) {
               color: 'black',
             }}>
             {userData?.firstName} {userData?.lastName}
-            {/* {userData?.firstName || ''} {userData?.lastName || ''}{' '}
-            {userData?.displayName ? ` ${userData.displayName}` : ''} */}
           </Text>
         </View>
 

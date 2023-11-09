@@ -51,8 +51,6 @@ export default function UserScreen({navigation}) {
   const firstname = userData?.firstName;
   const lastname = userData?.lastName;
   const displayname = userData?.displayName;
-  //needs to be set to whatever the question of the day is.
-  //let DailyQuestion = 'What is your NOT YOUR favorite Pizza topping';
 
   //pulls in answer of the day from the async storage.
   useEffect(() => {
@@ -86,7 +84,6 @@ export default function UserScreen({navigation}) {
         console.log('Question:' + dailyQuestion);
         setQuestion(dailyQuestion);
       } catch (error) {
-        // error reading value
         console.error(`Error: ${error}`);
       }
     };
@@ -257,9 +254,6 @@ export default function UserScreen({navigation}) {
               FIREBASE_AUTH.signOut();
               GoogleSignin.signOut();
               navigation.push('Login');
-              // navigation.navigate(() => {
-              //   Login;
-              //});
             }}>
             <Text style={styles.userBtnTxt}>Sign Out</Text>
           </TouchableOpacity>
@@ -309,16 +303,6 @@ export default function UserScreen({navigation}) {
         </View>
 
         <View>
-          {/* <Text
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontWeight: 'bold',
-              marginTop: 40,
-              fontSize: 22,
-            }}>
-            Answer Calendar Or Graph {'\n'} for who you know Best?
-          </Text> */}
           <TouchableOpacity
             onPress={() => {
               navigation.push('WhoKnowsWho');

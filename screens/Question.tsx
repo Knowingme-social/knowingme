@@ -6,7 +6,7 @@
 import {useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Button, Alert} from 'react-native';
 import React from 'react';
-import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import {FIRESTORE_DB} from '../firebaseConfig';
 import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 
 export default function Question({navigation}) {
@@ -29,7 +29,7 @@ export default function Question({navigation}) {
       date: dateString,
       created: serverTimestamp(),
     });
-    //clears answer box after submition
+    ////clears answer box after submition
     //SetAnswer('');
   };
 

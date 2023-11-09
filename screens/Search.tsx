@@ -17,14 +17,7 @@ import React, {useEffect, useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
-import {
-  collection,
-  where,
-  query,
-  getDocs,
-  addDoc,
-  doc,
-} from 'firebase/firestore';
+import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
 //import {oneUser} from './EditProfile';
 
 export default function Search({navigation}) {
@@ -66,7 +59,8 @@ export default function Search({navigation}) {
 
       const snapshot = await getDocs(getUserData);
       if (!snapshot.empty) {
-        const userData = snapshot.docs[0].data(); // Assuming only one document will match
+        // Assuming only one document will match
+        const userData = snapshot.docs[0].data();
         setUserInfo(userData);
       } else {
         console.log('No user with the given details found');

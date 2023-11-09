@@ -21,10 +21,6 @@ import {signInWithCredential, signInWithEmailAndPassword} from 'firebase/auth';
 import {GoogleAuthProvider} from 'firebase/auth';
 import {doc, getDoc, serverTimestamp, setDoc} from 'firebase/firestore';
 
-// //to ignore async storage warning.
-//import {LogBox} from 'react-native';
-//LogBox.ignoreAllLogs();
-
 export default function Login({navigation}) {
   GoogleSignin.configure({
     webClientId:

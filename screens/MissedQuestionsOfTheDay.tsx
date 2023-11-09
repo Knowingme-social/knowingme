@@ -43,7 +43,8 @@ export default function MissedQuestionsOfTheDay({navigation}) {
 
       const snapshot = await getDocs(getUserData);
       if (!snapshot.empty) {
-        const userData = snapshot.docs[0].data(); // Assuming only one document will match
+        // Assuming only one document will match
+        const userData = snapshot.docs[0].data();
         setUserInfo(userData);
       } else {
         console.log('No user with the given details found');

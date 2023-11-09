@@ -183,9 +183,6 @@ export default function FriendsQuestions({navigation}) {
                     setQuestionFirstName(item.firstName);
                     setQuestionDisplayName(item.displayName);
                   }
-
-                  // selectAnswer(item[answer], item.email, item.date);
-                  // console.log('I was pressed');
                 }}
                 style={[
                   styles.answerContainer,

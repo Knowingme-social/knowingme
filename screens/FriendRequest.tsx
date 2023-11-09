@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {View, Text, Button, FlatList, Pressable} from 'react-native';
 

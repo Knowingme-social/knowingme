@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-//import Home from './Home';
+
 import Login from './Login';
 
 import {useEffect, useState} from 'react';
@@ -11,13 +11,11 @@ import {User, onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH} from '../firebaseConfig';
 import History from './History';
 import SignUp from './SignUp';
-//import Question from './Question';
+
 import UserScreen from './UserScreen';
 import ResetPassword from './ResetPassword';
 import EditProfile from './EditProfile';
 import Search from './Search';
-// import Question from './Question';
-// import Home from './Home';
 
 import FriendRequest from './FriendRequest';
 import {ActivityIndicator} from 'react-native';
@@ -54,16 +52,6 @@ export default function LoginFlow() {
         <LoginStack.Navigator>
           {user ? (
             <>
-              {/* <LoginStack.Screen
-                name="Home"
-                component={Home}
-                options={{headerShown: false}}
-              />
-              <LoginStack.Screen
-                name="Question"
-                component={Question}
-                options={{headerShown: false}}
-              /> */}
               <LoginStack.Screen
                 name="User Screen"
                 component={UserScreen}

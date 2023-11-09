@@ -62,7 +62,6 @@ export default function History({navigation}) {
           Question: {item.questionOfTheDay}
         </Text>
         <Text style={styles.AnswerText}>Answer: {item.useranswer}</Text>
-        {/* <Text style={styles.AnswerText}>Answer: {item.id}</Text> */}
 
         <Entypo name="trash" size={24} color="red" onPress={deleteItem} />
       </View>
@@ -102,7 +101,3 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
 });
-
-{
-  /* <Button title="Go Back" onPress={() => navigation.pop()} /> */
-}
