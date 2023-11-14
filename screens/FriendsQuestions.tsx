@@ -8,11 +8,23 @@ import {addDoc, collection, getDocs, query, where} from 'firebase/firestore';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {onAuthStateChanged} from 'firebase/auth';
 
+type Question = {
+  id: string;
+  questionOfTheDay: string;
+  email: string;
+  answerOption1: string;
+  answerOption2: string;
+  answerOption3: string;
+  answerOption4: string;
+  usersAnswer: string;
+  date: string;
+};
+
 export default function FriendsQuestions({navigation}) {
   const [user, setUser] = useState(null);
   const [friends, setFriends] = useState([]);
   const [friendIds, setFriendIds] = useState([]);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [questionDate, setQuestionDate] = useState('');
   const [friendsEmail, setFriendsEmail] = useState('');
@@ -49,7 +61,7 @@ export default function FriendsQuestions({navigation}) {
         }));
         setFriends(friendsData);
 
-        const extractedFriendIds = friendsData.map(friend => friend.friendId);
+        const extractedFriendIds: string[] = friendsData.map(friend => friend.friendId);
         setFriendIds(extractedFriendIds);
         loadQuestionsForFriends(extractedFriendIds);
       } catch (error) {
@@ -58,8 +70,8 @@ export default function FriendsQuestions({navigation}) {
     }
   };
 
-  const loadQuestionsForFriends = async friendIds => {
-    const unansweredQuestions = [];
+  const loadQuestionsForFriends = async (friendIds: string[]) => {
+    const unansweredQuestions: Question[] = [];
 
     for (const friendId of friendIds) {
       const dailyCollectionRef = collection(FIRESTORE_DB, 'friendsQuestions');
@@ -71,7 +83,7 @@ export default function FriendsQuestions({navigation}) {
       const dailySnapshot = await getDocs(questionsFriends);
 
       for (const doc of dailySnapshot.docs) {
-        const question = {id: doc.id, ...doc.data()};
+        const question = {id: doc.id, ...doc.data()} as Question;
         console.log(`Checking question: ${question.id}`);
         const isAnswered = await isQuestionAnswered(
           friendId,
@@ -88,14 +100,18 @@ export default function FriendsQuestions({navigation}) {
     setQuestions(unansweredQuestions);
   };
 
-  const isQuestionAnswered = async (friendId, questionId, date) => {
+  const isQuestionAnswered = async (
+    friendId: string,
+    questionId: string,
+    date: string,
+  ) => {
     const friendsAnswerCollectionRef = collection(
       FIRESTORE_DB,
       'friendsAnswers',
     );
     const friendAnswerQuery = query(
       friendsAnswerCollectionRef,
-      where('userId', '==', user.email),
+      where('userId', '==', user?.email),
       where('questionID', '==', questionId),
       where('date', '==', date),
     );
@@ -103,6 +119,9 @@ export default function FriendsQuestions({navigation}) {
     const friendAnswerSnapshot = await getDocs(friendAnswerQuery);
     return !friendAnswerSnapshot.empty;
   };
+
+
+
   const selectAnswer = async () => {
     await addDoc(collection(FIRESTORE_DB, 'friendsAnswers'), {
       usersAnswer: selectedAnswer,
@@ -186,7 +205,7 @@ export default function FriendsQuestions({navigation}) {
 
                   // selectAnswer(item[answer], item.email, item.date);
                   // console.log('I was pressed');
-                }}
+                  }}
                 style={[
                   styles.answerContainer,
                   selectedAnswer === item[answer]
@@ -201,8 +220,6 @@ export default function FriendsQuestions({navigation}) {
       ) : (
         <Text>No more questions available at the moment.</Text>
       )}
-
-      <Button title="Go Back" onPress={() => navigation.pop()} />
     </View>
   );
 }
@@ -210,38 +227,59 @@ export default function FriendsQuestions({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F0F8FF', // A light azure that's easy on the eyes.
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around', // Evenly distribute space among children.
+    padding: 20, // Add padding to avoid content sticking to edges.
   },
   questionContainer: {
-    backgroundColor: '@DDDDDD',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    backgroundColor: 'grey', // A blanched almond color for a soft look.
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: '#000', // Add shadow for a subtle depth effect.
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   questionText: {
-    fontSize: 16,
-    color: 'black',
-  },
-  dateText: {
-    fontSize: 12,
-    color: 'black',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  answerText: {
-    color: 'blue',
-    padding: 5,
-    fontSize: 14,
+    fontSize: 18,
+    fontWeight: 'bold', // Make the question stand out.
+    color: '#a0fc9d', // A dark grey that's softer than black.
+    marginBottom: 10, // Add space below the question.
   },
   answerContainer: {
-    borderBlockColor: 'black',
+    backgroundColor: '#FFF', // White answer blocks to stand out from the question container.
     borderWidth: 1,
+    borderColor: '#ADD8E6', // Light blue border for a subtle contrast.
     marginTop: 10,
     borderRadius: 8,
+    padding: 10, // Padding inside the answer blocks.
+  },
+  answerText: {
+    fontSize: 16, // Slightly smaller than the question for hierarchy.
+    color: '#104E8B', // A navy blue for a bit of color.
+    textAlign: 'center', // Center the answer text.
   },
   selectedAnswer: {
-    backgroundColor: 'green',
+    backgroundColor: '#90EE90', // A light green to indicate selection.
+  },
+  button: {
+    backgroundColor: '#1E90FF', // Dodger blue for a vibrant button.
+    color: '#FFFFFF', // White text on the button for contrast.
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#FFFFFF', // White text for readability.
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

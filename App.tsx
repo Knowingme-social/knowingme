@@ -13,7 +13,7 @@ import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
 import DailyQuestion from './screens/DailyQuestion';
-import Question from './screens/Question';
+import Question from './components/Question';
 import MissedQuestionsOfTheDay from './screens/MissedQuestionsOfTheDay';
 import FriendsQuestions from './screens/FriendsQuestions';
 import WhoKnowsWho from './screens/WhoKnowsWho';

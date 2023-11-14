@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, FlatList, Pressable} from 'react-native';
-
+import {View, Text, Button, FlatList, Pressable, ScrollView, StyleSheet} from 'react-native';
+import NavBar from './bottomNav';
 import {
   collection,
   addDoc,
@@ -16,45 +16,19 @@ import {
 } from 'firebase/firestore';
 import {onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import GoBackButton from './goback';
 
 export default function FriendRequest({navigation}) {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [friends, setFriends] = useState([]);
-  const [userInfo, setUserInfo] = useState([]);
-
-  const uid = FIREBASE_AUTH.currentUser?.uid;
 
   //check for authenticated user
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, user => {
       setUser(user);
     });
-  }, []);
-
-  const fetchCurrentUserDetails = async () => {
-    try {
-      const getUserData = query(
-        collection(FIRESTORE_DB, 'users'),
-        where('userId', '==', uid),
-      );
-
-      const snapshot = await getDocs(getUserData);
-      if (!snapshot.empty) {
-        const userData = snapshot.docs[0].data(); // Assuming only one document will match
-        setUserInfo(userData);
-      } else {
-        console.log('No user with the given details found');
-        setUserInfo(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCurrentUserDetails();
   }, []);
 
   // bring in Users and friend Requests and friends in order to mutate the data
@@ -118,9 +92,6 @@ export default function FriendRequest({navigation}) {
     senderId,
     senderEmail,
     receiverId,
-    firstname,
-    lastname,
-    displayname,
   ) => {
     // Update the friend request status to "accepted"
     const friendRequestsCollection = collection(FIRESTORE_DB, 'friendRequests');
@@ -130,19 +101,12 @@ export default function FriendRequest({navigation}) {
     // Add both users as friends (you can create a separate collection for friends)
     const friendsCollection = collection(FIRESTORE_DB, 'friends');
     await addDoc(friendsCollection, {
-      requestId,
       friendId: senderEmail,
       userId: receiverId,
-      firstName: firstname,
-      lastName: lastname,
-      displayname: displayname,
     });
     await addDoc(friendsCollection, {
       friendId: receiverId,
       userId: senderEmail,
-      firstName: userInfo.firstName,
-      lastName: userInfo.lastName,
-      displayName: userInfo.displayName,
     });
   };
 
@@ -182,64 +146,99 @@ export default function FriendRequest({navigation}) {
     });
   };
 
-  return (
-    <View>
-      <Text>Friend Requests:</Text>
-      <FlatList
-        data={friendRequests}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>
-              {item.firstName + ' ' + item.lastName} wants to be your friend.
-            </Text>
-            <Button
-              title="Accept"
-              onPress={() => {
-                navigation.pop();
-                acceptFriendRequest(
-                  item.id,
-                  item.senderId,
-                  item.senderEmail,
-                  item.receiverId,
-                  item.firstName,
-                  item.lastName,
-                  item.displayName,
-                );
-              }}
-            />
-            <Button
-              title="Decline"
-              onPress={() => {
-                navigation.pop();
-                declineFriendRequest(item.id);
-              }}
+    return (
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Friend Requests:</Text>
+            <FlatList
+              data={friendRequests}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <View style={styles.item}>
+                  <Text style={styles.itemText}>{item.senderEmail} wants to be your friend.</Text>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Accept"
+                      onPress={() => {
+                        navigation.pop();
+                        acceptFriendRequest(
+                          item.id,
+                          item.senderId,
+                          item.senderEmail,
+                          item.receiverId,
+                        );
+                      }}
+                    />
+                    <Button
+                      title="Decline"
+                      onPress={() => {
+                        navigation.pop();
+                        declineFriendRequest(item.id);
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
             />
           </View>
-        )}
-      />
 
-      <View>
-        <Pressable onPress={() => navigation.pop()}>
-          <Text style={{color: 'blue'}}> Go Back </Text>
-        </Pressable>
-      </View>
-      <Text>Friends:</Text>
-      <FlatList
-        data={friends}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>{item.firstName + ' ' + item.lastName} is your friend.</Text>
-            <Button
-              title="Delete"
-              onPress={() => {
-                deleteFriend(item.friendId);
-              }}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Friends:</Text>
+            <FlatList
+              data={friends}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <View style={styles.item}>
+                  <Text style={styles.itemText}>{item.friendId} is your friend.</Text>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Delete"
+                      onPress={() => {
+                        deleteFriend(item.friendId);
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
             />
           </View>
-        )}
-      />
-    </View>
-  );
-}
+        </ScrollView>
+        <View style={{bottom: 820}}>
+          <GoBackButton navigation={navigation} />
+        </View>
+      </View>
+    );
+  }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+    },
+    section: {
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginTop: 100,
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 10,
+      backgroundColor: '#f9c2ff',
+      marginVertical: 5,
+      borderRadius: 5,
+    },
+    itemText: {
+      flex: 1,
+      marginRight: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  });

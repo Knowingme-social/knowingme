@@ -13,17 +13,18 @@ import History from './History';
 import SignUp from './SignUp';
 //import Question from './Question';
 import UserScreen from './UserScreen';
-import ResetPassword from './ResetPassword';
+import ResetPassword from '../components/ResetPassword';
 import EditProfile from './EditProfile';
-import Search from './Search';
+import Search from '../components/Search';
 // import Question from './Question';
-// import Home from './Home';
+import Home from '../components/Home';
 
-import FriendRequest from './FriendRequest';
+import FriendRequest from '../components/FriendRequest';
 import {ActivityIndicator} from 'react-native';
 import MissedQuestionsOfTheDay from './MissedQuestionsOfTheDay';
 import FriendsQuestions from './FriendsQuestions';
 import WhoKnowsWho from './WhoKnowsWho';
+import NavBar from '../components/bottomNav';
 
 const LoginStack = createNativeStackNavigator();
 
@@ -54,12 +55,12 @@ export default function LoginFlow() {
         <LoginStack.Navigator>
           {user ? (
             <>
-              {/* <LoginStack.Screen
+              <LoginStack.Screen
                 name="Home"
-                component={Home}
+                component={NavBar}
                 options={{headerShown: false}}
               />
-              <LoginStack.Screen
+              {/* <LoginStack.Screen
                 name="Question"
                 component={Question}
                 options={{headerShown: false}}
