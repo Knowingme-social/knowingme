@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable prettier/prettier */
 import {
   View,
   Text,
@@ -109,8 +111,7 @@ export default function EditProfile({navigation}) {
       return () => subscriber();
     }
   }, [uid]);
-  //console.log(userData);
-  //console.log(image);
+
   const queryRef = query(
     collection(FIRESTORE_DB, 'users'),
     where('userId', '==', uid),
