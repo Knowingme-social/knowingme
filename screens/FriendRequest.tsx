@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {View, Text, Button, FlatList, Pressable} from 'react-native';
 
@@ -132,7 +133,7 @@ export default function FriendRequest({navigation}) {
       userId: receiverId,
       firstName: firstname,
       lastName: lastname,
-      displayname: displayname,
+      displayName: displayname,
     });
     await addDoc(friendsCollection, {
       friendId: receiverId,
