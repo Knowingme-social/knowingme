@@ -44,11 +44,14 @@ export default function EditProfile({navigation}) {
   const [newPhone, setNewPhone] = useState('');
   const [image, setImage] = useState(userData?.picture || null);
 
+  const defaultPicture =
+    'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1';
+
   const uid = FIREBASE_AUTH.currentUser?.uid;
 
   //to create photo library picker(for pictures from your device)
   const imagePicker = async () => {
-    await launchImageLibrary({
+    launchImageLibrary({
       mediaType: 'photo',
       quality: 1,
     })
@@ -70,10 +73,8 @@ export default function EditProfile({navigation}) {
       uploadBytes(reference, blob)
         .then(snapshot => {
           getDownloadURL(snapshot.ref).then(downloadURL => {
-            //console.log('File available at', downloadURL);
             setImage(downloadURL);
-            //return downloadURL;
-            //console.log(image);
+
             console.log(imageUri);
           });
         })
@@ -84,7 +85,7 @@ export default function EditProfile({navigation}) {
       console.log(error);
     }
   };
-  //console.log(image);
+
   useEffect(() => {
     // Check if uid exists before making the query
     if (uid) {
@@ -146,9 +147,7 @@ export default function EditProfile({navigation}) {
     }
   };
   let profilePic = {
-    uri:
-      userData?.picture ||
-      'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1',
+    uri: userData?.picture || defaultPicture,
   };
 
   return (
