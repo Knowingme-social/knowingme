@@ -18,6 +18,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
@@ -30,7 +31,7 @@ import {
   getDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import {oneUser} from './EditProfile';
+import {oneUser} from '../components/EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //need that to ignore annoying navigation console error/comment it out when need to test new additions
@@ -51,6 +52,15 @@ export default function UserScreen({navigation}) {
   const firstname = userData?.firstName;
   const lastname = userData?.lastName;
   const displayname = userData?.displayName;
+
+  function shareInvite() {
+    if (uid) {
+      const referralLink = `https://Knowingme.io/invite?referral_uid=${uid}`;
+      Share.share({
+        message: `Join me on Knowingme! Use my link: ${referralLink}`,
+      });
+    }
+  }
 
   //pulls in answer of the day from the async storage.
   useEffect(() => {
@@ -227,91 +237,85 @@ export default function UserScreen({navigation}) {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        showsVerticalScrollIndicator={false}>
-        <Image style={styles.userImg} source={profilePic} />
-        <Text style={styles.userName}>
-          {userData?.firstName} {userData?.lastName}
-        </Text>
-        {/* <Text style={styles.aboutUser}>
-          About: Just an average Joe who likes to hike and bike, like a Mike!
-        </Text> */}
-        <View style={styles.userBtnWrapper}>
+    <>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          showsVerticalScrollIndicator={false}>
+          <Image style={styles.userImg} source={profilePic} />
+          <Text style={styles.userName}>
+            {userData?.firstName} {userData?.lastName}
+          </Text>
+          {/* <Text style={styles.aboutUser}>
+            About: Just an average Joe who likes to hike and bike, like a Mike!
+          </Text> */}
+          <View style={styles.userBtnWrapper}>
           <TouchableOpacity
-            style={styles.userBtn}
-            onPress={() => navigation.push('Edit Profile')}>
-            <Text style={styles.userBtnTxt}>Edit Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.userBtn}
-            onPress={() => {
-              FIREBASE_AUTH.signOut();
-              GoogleSignin.signOut();
-              navigation.push('Login');
-            }}>
-            <Text style={styles.userBtnTxt}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          {/* <Pressable onPress={() => navigation.pop()}>
-            <Text style={{color: 'blue'}}> Go Back </Text>
-          </Pressable> */}
-        </View>
+          style={{
+            position: 'absolute',
+            top: -190, 
+            right: 30, 
+            zIndex: 1
+          }}
+          onPress={shareInvite}>
+          <Icon name="share-sharp" size={30} color="black" />
+          <Text>share</Text>
+        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.userBtn}
+              onPress={() => navigation.push('Edit Profile')}>
+              <Text style={styles.userBtnTxt}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.userBtn}
+              onPress={() => {
+                FIREBASE_AUTH.signOut();
+                GoogleSignin.signOut();
+                navigation.push('Login');
+                // navigation.navigate(() => {
+                //   Login;
+                //});
+              }}>
+              <Text style={styles.userBtnTxt}>Sign Out</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+          </View>
+          <View style={styles.userInfoWrapper}>
+            <View style={styles.userInfoItem}>
+            </View>
+            <View style={styles.userInfoItem}>
+            </View>
 
-        <View style={styles.userInfoWrapper}>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('MissedQuestionsOfTheDay');
-              }}>
-              <Text style={styles.userInfoTitle}>History</Text>
-            </TouchableOpacity>
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Search');
+                }}>
+                <Text style={styles.userInfoTitle}>Add</Text>
+                <Text style={styles.userInfoSubTitle}>Friends</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.userInfoItem}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('FriendRequest');
+                }}>
+                <Text style={styles.userInfoTitle}> Friend</Text>
+                <Text style={styles.userInfoSubTitle}>Requests</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('FriendsQuestions');
-              }}>
-              <Text style={styles.userInfoTitle}>Friends Questions</Text>
-            </TouchableOpacity>
+          <View>
           </View>
-
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('Search');
-              }}>
-              <Text style={styles.userInfoTitle}>Add</Text>
-              <Text style={styles.userInfoSubTitle}>Friends</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.userInfoItem}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.push('FriendRequest');
-              }}>
-              <Text style={styles.userInfoTitle}> Friend</Text>
-              <Text style={styles.userInfoSubTitle}>Requests</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push('WhoKnowsWho');
-            }}>
-            <Text style={styles.userInfoTitle}>Best and Worst</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+     
+    </>
   );
 }
 
@@ -319,18 +323,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
   },
   userImg: {
     height: 150,
     width: 150,
     borderRadius: 75,
+    padding: 85,
+    marginBottom: 10,
   },
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   aboutUser: {
     fontSize: 12,
@@ -346,7 +351,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   userBtn: {
-    borderColor: '#2e64e5',
+    borderColor: 'black',
     borderWidth: 2,
     borderRadius: 3,
     paddingVertical: 8,
@@ -354,7 +359,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   userBtnTxt: {
-    color: '#2e64e5',
+    color: 'black',
   },
   userInfoWrapper: {
     flexDirection: 'row',
@@ -369,11 +374,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    marginRight: 70,
     textAlign: 'center',
   },
   userInfoSubTitle: {
     fontSize: 12,
     color: '#666',
     textAlign: 'center',
+    marginRight: 66,
   },
 });

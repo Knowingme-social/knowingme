@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, FlatList, Pressable} from 'react-native';
+import {View, Text, Button, FlatList, Pressable, StyleSheet, ScrollView} from 'react-native';
 
 import {
   collection,
@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import {onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
+import GoBackButton from './goback';
 
 export default function FriendRequest({navigation}) {
   const [user, setUser] = useState(null);
@@ -181,63 +182,98 @@ export default function FriendRequest({navigation}) {
   };
 
   return (
-    <View>
-      <Text>Friend Requests:</Text>
-      <FlatList
-        data={friendRequests}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>
-              {item.firstName + ' ' + item.lastName} wants to be your friend.
-            </Text>
-            <Button
-              title="Accept"
-              onPress={() => {
-                navigation.pop();
-                acceptFriendRequest(
-                  item.id,
-                  item.senderId,
-                  item.senderEmail,
-                  item.receiverId,
-                  item.firstName,
-                  item.lastName,
-                  item.displayName,
-                );
-              }}
-            />
-            <Button
-              title="Decline"
-              onPress={() => {
-                navigation.pop();
-                declineFriendRequest(item.id);
-              }}
-            />
-          </View>
-        )}
-      />
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Friend Requests:</Text>
+          <FlatList
+            data={friendRequests}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <View style={styles.item}>
+                <Text style={styles.itemText}>{item.senderEmail} wants to be your friend.</Text>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Accept"
+                    onPress={() => {
+                      navigation.pop();
+                      acceptFriendRequest(
+                        item.id,
+                        item.senderId,
+                        item.senderEmail,
+                        item.receiverId,
+                      );
+                    }}
+                  />
+                  <Button
+                    title="Decline"
+                    onPress={() => {
+                      navigation.pop();
+                      declineFriendRequest(item.id);
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+          />
+        </View>
 
-      <View>
-        <Pressable onPress={() => navigation.pop()}>
-          <Text style={{color: 'blue'}}> Go Back </Text>
-        </Pressable>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Friends:</Text>
+          <FlatList
+            data={friends}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <View style={styles.item}>
+                <Text style={styles.itemText}>{item.friendId} is your friend.</Text>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Delete"
+                    onPress={() => {
+                      deleteFriend(item.friendId);
+                    }}
+                  />
+                </View>
+              </View>
+            )}
+          />
+        </View>
+      </ScrollView>
+      <View style={{bottom: 820}}>
+        <GoBackButton navigation={navigation} />
       </View>
-      <Text>Friends:</Text>
-      <FlatList
-        data={friends}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <View>
-            <Text>{item.firstName + ' ' + item.lastName} is your friend.</Text>
-            <Button
-              title="Delete"
-              onPress={() => {
-                deleteFriend(item.friendId);
-              }}
-            />
-          </View>
-        )}
-      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 100,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#f9c2ff',
+    marginVertical: 5,
+    borderRadius: 5,
+  },
+  itemText: {
+    flex: 1,
+    marginRight: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
