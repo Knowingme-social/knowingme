@@ -14,7 +14,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
@@ -22,10 +22,10 @@ import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
 import GoBackButton from './goback';
 //import {oneUser} from './EditProfile';
 
-
 export default function Search({navigation}) {
   // Use an array to store user data
   const [users, setUsers] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
   const uid = FIREBASE_AUTH.currentUser?.uid;
   const email = FIREBASE_AUTH.currentUser?.email;
 
@@ -52,9 +52,32 @@ export default function Search({navigation}) {
     }
   };
 
-  //console.log(users);
+  const fetchCurrentUserDetails = async () => {
+    try {
+      const getUserData = query(
+        collection(FIRESTORE_DB, 'users'),
+        where('userId', '==', uid),
+      );
 
-  const sendFriendRequest = async receiverId => {
+      const snapshot = await getDocs(getUserData);
+      if (!snapshot.empty) {
+        // Assuming only one document will match
+        const userData = snapshot.docs[0].data();
+        setUserInfo(userData);
+      } else {
+        console.log('No user with the given details found');
+        setUserInfo(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUserDetails();
+  }, []);
+
+  const sendFriendRequest = async (receiverId, userId) => {
     try {
       if (uid) {
         const friendRequestsCollection = collection(
@@ -74,10 +97,14 @@ export default function Search({navigation}) {
         if (existingRequests.size === 0) {
           // If no existing requests are found, send the friend request
           await addDoc(friendRequestsCollection, {
-            senderId: uid,
+            // senderId: uid,
             receiverId,
             status: 'pending',
             senderEmail: email,
+            receiverUid: userId,
+            firstName: userInfo.firstName,
+            lastName: userInfo.lastName,
+            displayName: userInfo.displayName,
           });
           console.log('Friend request sent');
         } else {
@@ -95,7 +122,12 @@ export default function Search({navigation}) {
       <View style={styles.searchContainer}>
         <Entypo name="magnifying-glass" size={24} color="black" />
         <TextInput
-          style={{flex: 1, paddingLeft: 10, color: 'black', fontFamily: 'HelveticaNeue-Light'}}
+          style={{
+            flex: 1,
+            paddingLeft: 10,
+            color: 'black',
+            fontFamily: 'HelveticaNeue-Light',
+          }}
           placeholder="Type Friend's Name"
           placeholderTextColor="#BFBFBF"
           onChangeText={search => {
@@ -124,7 +156,7 @@ export default function Search({navigation}) {
               style={styles.button}
               onPress={() => {
                 console.log('sent');
-                sendFriendRequest(item.email);
+                sendFriendRequest(item.email, item.userId);
                 navigation.pop();
               }}>
               <Text style={styles.buttonText}>Send Friend Request</Text>
@@ -132,15 +164,6 @@ export default function Search({navigation}) {
           </View>
         )}
       />
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <View>
-        
-        </View>
-      </View>
     </View>
   );
 }

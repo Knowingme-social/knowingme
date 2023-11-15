@@ -1,6 +1,14 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, FlatList, Pressable, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 
 import {
   collection,
@@ -191,7 +199,10 @@ export default function FriendRequest({navigation}) {
             keyExtractor={item => item.id}
             renderItem={({item}) => (
               <View style={styles.item}>
-                <Text style={styles.itemText}>{item.senderEmail} wants to be your friend.</Text>
+                <Text style={styles.itemText}>
+                  {item.firstName + ' ' + item.lastName} wants to be your
+                  friend.
+                </Text>
                 <View style={styles.buttonContainer}>
                   <Button
                     title="Accept"
@@ -202,6 +213,9 @@ export default function FriendRequest({navigation}) {
                         item.senderId,
                         item.senderEmail,
                         item.receiverId,
+                        item.firstName,
+                        item.lastName,
+                        item.displayName,
                       );
                     }}
                   />
@@ -225,7 +239,9 @@ export default function FriendRequest({navigation}) {
             keyExtractor={item => item.id}
             renderItem={({item}) => (
               <View style={styles.item}>
-                <Text style={styles.itemText}>{item.friendId} is your friend.</Text>
+                <Text style={styles.itemText}>
+                  {item.firstName + ' ' + item.lastName} is your friend.
+                </Text>
                 <View style={styles.buttonContainer}>
                   <Button
                     title="Delete"
@@ -237,6 +253,11 @@ export default function FriendRequest({navigation}) {
               </View>
             )}
           />
+        </View>
+        <View>
+          <Pressable onPress={() => navigation.pop()}>
+            <Text style={{color: 'blue'}}> Go Back </Text>
+          </Pressable>
         </View>
       </ScrollView>
       <View style={{bottom: 820}}>

@@ -61,8 +61,8 @@ export default function History({navigation}) {
         <Text style={styles.QuestionText}>
           Question: {item.questionOfTheDay}
         </Text>
-        <Text style={styles.AnswerText}>Answer: {item.useranswer}</Text>
-  
+        <Text style={styles.AnswerText}>Answer: {item.usersAnswer}</Text>
+
         <Entypo
           name="trash"
           size={24}
@@ -79,19 +79,19 @@ export default function History({navigation}) {
   };
 
   return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Your History</Text>
-        </View>
-        {dailyData.length >= 0 && (
-          <FlatList
-            data={dailyData}
-            renderItem={item => renderData(item)}
-            keyExtractor={(dailyData: Daily) => dailyData.id}
-          />
-        )}
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Your History</Text>
       </View>
-    );
+      {dailyData.length >= 0 && (
+        <FlatList
+          data={dailyData}
+          renderItem={item => renderData(item)}
+          keyExtractor={(dailyData: Daily) => dailyData.id}
+        />
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center', // Center the text horizontally
     justifyContent: 'center', // Center the text vertically
-   height: 100,
+    height: 100,
   },
   headerText: {
     fontSize: 24,

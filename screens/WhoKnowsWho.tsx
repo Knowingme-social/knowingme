@@ -2,7 +2,14 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-catch-shadow */
 import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, StyleSheet, Button, Animated, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {onAuthStateChanged} from 'firebase/auth';
@@ -25,14 +32,14 @@ export default function WhoKnowsWho({navigation}) {
       useNativeDriver: true,
     }).start();
   }, [selectedTab, animation]);
- 
+
   const slideInterpolate = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [-69, 74], // Adjust this based on your tab's width
   });
- 
+
   const animatedIndicatorStyle = {
-    transform: [{ translateX: slideInterpolate }],
+    transform: [{translateX: slideInterpolate}],
   };
 
   useEffect(() => {
@@ -52,8 +59,6 @@ export default function WhoKnowsWho({navigation}) {
     }
   }, [user]);
 
-
-  
   const resetStates = () => {
     setBestFriend('');
     setLeastKnownFriend('');
@@ -196,16 +201,22 @@ export default function WhoKnowsWho({navigation}) {
     switch (selectedTab) {
       case 'bestKnownByYou':
         return <Text>you know {bestFriend} the best</Text>;
-        {renderStatistics()}
-        <Text>Statistics for 'Best Known you'</Text>
+        {
+          renderStatistics();
+        }
+        <Text>Statistics for 'Best Known you'</Text>;
       case 'bestKnownByOthers':
         return <Text> {mostKnowledgeableFriend} knows you the best</Text>;
-        {renderStatistics()}
-        <Text>Statistics for 'Best Known By Others'</Text>
-        case 'leastKnownByOthers':
+        {
+          renderStatistics();
+        }
+        <Text>Statistics for 'Best Known By Others'</Text>;
+      case 'leastKnownByOthers':
         return <Text> {leastKnownFriend} knows you the worst they suck</Text>;
-        {renderStatistics()}
-        <Text>Statistics for 'Least Known By Others'</Text>
+        {
+          renderStatistics();
+        }
+        <Text>Statistics for 'Least Known By Others'</Text>;
       default:
         return null;
     }
@@ -217,15 +228,25 @@ export default function WhoKnowsWho({navigation}) {
         {/* The tabs themselves stay the same color */}
         <TouchableOpacity
           style={[styles.tab, styles.leftTab]}
-          onPress={() => setSelectedTab('bestKnownByYou')}
-        >
-          <Text style={[styles.tabText, selectedTab === 'bestKnownByYou' && styles.activeTabText]}>Who You Know</Text>
+          onPress={() => setSelectedTab('bestKnownByYou')}>
+          <Text
+            style={[
+              styles.tabText,
+              selectedTab === 'bestKnownByYou' && styles.activeTabText,
+            ]}>
+            Who You Know
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, styles.rightTab]}
-          onPress={() => setSelectedTab('bestKnownByOthers')}
-        >
-          <Text style={[styles.tabText, selectedTab === 'bestKnownByOthers' && styles.activeTabText]}>Who Knows You</Text>
+          onPress={() => setSelectedTab('bestKnownByOthers')}>
+          <Text
+            style={[
+              styles.tabText,
+              selectedTab === 'bestKnownByOthers' && styles.activeTabText,
+            ]}>
+            Who Knows You
+          </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity
           style={[styles.tab, styles.leftTab]}
@@ -236,12 +257,10 @@ export default function WhoKnowsWho({navigation}) {
         {/* Animated indicator */}
         <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
       </View>
-      <View style={styles.content}>
-        {renderContent()}
-      </View>
+      <View style={styles.content}>{renderContent()}</View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   slider: {
@@ -258,13 +277,13 @@ const styles = StyleSheet.create({
     // marginHorizontal: 20, // Added horizontal margin to provide space on both sides
     marginTop: 100,
     shadowColor: '#000', // Added shadow for a nice elevation effect
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
     height: 700,
     overflow: 'hidden',
-    zIndex: -2, 
+    zIndex: -2,
   },
   tabs: {
     flexDirection: 'row',

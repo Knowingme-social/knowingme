@@ -153,7 +153,9 @@ export default function FriendsQuestions({navigation}) {
         questionsToDisplay.map((item, index) => (
           <View key={index} style={styles.questionContainer}>
             <Text style={styles.questionText}>{item.questionOfTheDay}</Text>
-            <Text style={styles.questionText}>{item.email}</Text>
+            <Text style={styles.questionText}>
+              {item.firstName + ' ' + item.lastName}
+            </Text>
 
             {[
               'answerOption1',
@@ -178,7 +180,7 @@ export default function FriendsQuestions({navigation}) {
 
                   // selectAnswer(item[answer], item.email, item.date);
                   // console.log('I was pressed');
-                  }}
+                }}
                 style={[
                   styles.answerContainer,
                   selectedAnswer === item[answer]
@@ -210,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     shadowColor: '#000', // Add shadow for a subtle depth effect.
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
@@ -244,7 +246,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
