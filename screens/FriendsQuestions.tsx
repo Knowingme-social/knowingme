@@ -171,15 +171,18 @@ export default function FriendsQuestions({navigation}) {
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
                     setQuestionId(item.id);
+                    setQuestionlastName(item.lastName);
+                    setQuestionFirstName(item.firstName);
+                    setQuestionDisplayName(item.displayName);
                   } else {
                     setSelectedAnswer('incorrect');
                     setQuestionDate(item.date);
                     setFriendsEmail(item.email);
                     setQuestionId(item.id);
+                    setQuestionlastName(item.lastName);
+                    setQuestionFirstName(item.firstName);
+                    setQuestionDisplayName(item.displayName);
                   }
-
-                  // selectAnswer(item[answer], item.email, item.date);
-                  // console.log('I was pressed');
                 }}
                 style={[
                   styles.answerContainer,

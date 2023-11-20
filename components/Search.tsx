@@ -33,7 +33,7 @@ export default function Search({navigation}) {
     try {
       const getUsers = query(
         collection(FIRESTORE_DB, 'users'),
-        where('lastName', '>=', search.toLowerCase()),
+        where('searchLastName', '>=', search.toLowerCase()),
       );
 
       const snapshot = await getDocs(getUsers);

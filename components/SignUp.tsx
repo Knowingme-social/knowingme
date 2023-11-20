@@ -38,6 +38,8 @@ export default function SignUp({navigation}) {
   const [lastName, setLastName] = useState('');
   //const [loading, setLoading] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const defaultPicture =
+    'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1';
 
   const createUser = async () => {
     try {
@@ -50,12 +52,12 @@ export default function SignUp({navigation}) {
       Alert.alert('User account created & signed in!');
       await addDoc(collection(FIRESTORE_DB, 'users'), {
         userId: auth.currentUser?.uid,
-        firstName: firstName.toLowerCase(),
-        lastName: lastName.toLowerCase(),
+        firstName: firstName,
+        lastName: lastName,
+        searchLastName: lastName.toLowerCase(),
         email: FIREBASE_AUTH.currentUser?.email,
         emailVerified: FIREBASE_AUTH.currentUser?.emailVerified,
-        picture:
-          'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1',
+        picture: defaultPicture,
         displayName: firstName + ' ' + lastName,
         phone: FIREBASE_AUTH.currentUser?.phoneNumber,
         created: serverTimestamp(),

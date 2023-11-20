@@ -32,6 +32,8 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const defaultPicture =
+    'https://firebasestorage.googleapis.com/v0/b/knowingme-social.appspot.com/o/defaultPic%2FQuestion.png?alt=media&token=39ec7cd0-7b73-4b4d-b9d3-fd8d999141d1';
 
   const signInWithGoogleAsync = async () => {
     try {
@@ -47,6 +49,8 @@ export default function Login({navigation}) {
       signInWithCredential(auth, googleCredential)
         .then(async userCredential => {
           const user = userCredential.user;
+          const firstN = user.displayName?.split(' ')[0];
+          const lastN = user.displayName?.split(' ')[1];
 
           // Check if the user already exists in the Firestore database
           const userRef = doc(FIRESTORE_DB, 'users', user.uid);
@@ -56,11 +60,12 @@ export default function Login({navigation}) {
             // User doesn't exist, so add them to the database
             await setDoc(userRef, {
               userId: user.uid,
-              firstName: 'No',
-              lastName: 'Name',
+              firstName: firstN,
+              lastName: lastN,
+              searchLastName: lastN?.toLowerCase(),
               email: user.email,
               emailVerified: user.emailVerified,
-              picture: null,
+              picture: defaultPicture,
               displayName: user.displayName,
               phone: user.phoneNumber,
               created: serverTimestamp(),

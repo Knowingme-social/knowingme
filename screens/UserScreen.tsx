@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
   LogBox,
+  Share,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -254,17 +255,17 @@ export default function UserScreen({navigation}) {
             About: Just an average Joe who likes to hike and bike, like a Mike!
           </Text> */}
           <View style={styles.userBtnWrapper}>
-          <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: -190, 
-            right: 30, 
-            zIndex: 1
-          }}
-          onPress={shareInvite}>
-          <Icon name="share-sharp" size={30} color="black" />
-          <Text>share</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -190,
+                right: 30,
+                zIndex: 1,
+              }}
+              onPress={shareInvite}>
+              <Icon name="share-sharp" size={30} color="black" />
+              <Text>share</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.userBtn}
               onPress={() => navigation.push('Edit Profile')}>
@@ -283,13 +284,10 @@ export default function UserScreen({navigation}) {
               <Text style={styles.userBtnTxt}>Sign Out</Text>
             </TouchableOpacity>
           </View>
-          <View>
-          </View>
+          <View></View>
           <View style={styles.userInfoWrapper}>
-            <View style={styles.userInfoItem}>
-            </View>
-            <View style={styles.userInfoItem}>
-            </View>
+            <View style={styles.userInfoItem}></View>
+            <View style={styles.userInfoItem}></View>
 
             <View style={styles.userInfoItem}>
               <TouchableOpacity
@@ -310,11 +308,9 @@ export default function UserScreen({navigation}) {
               </TouchableOpacity>
             </View>
           </View>
-          <View>
-          </View>
+          <View></View>
         </ScrollView>
       </SafeAreaView>
-     
     </>
   );
 }
