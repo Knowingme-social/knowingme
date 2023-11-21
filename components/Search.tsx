@@ -34,7 +34,7 @@ export default function Search({navigation}) {
       const normalizedSearch = search?.toLowerCase();
       const getUsers = query(
         collection(FIRESTORE_DB, 'users'),
-        where('searchLastName', '>=', normalizedSearch),
+        where('searchDisplayName' || 'email', '>=', normalizedSearch),
       );
 
       const snapshot = await getDocs(getUsers);
@@ -46,11 +46,18 @@ export default function Search({navigation}) {
         }))
         // Exclude the currently signed-in user
         .filter(user => user.userId !== uid)
-        .filter(user =>
-          user.searchLastName.startsWith(normalizedSearch.substring(0, 3)),
+        .filter(
+          user =>
+            user.searchDisplayName.startsWith(
+              normalizedSearch.substring(0, 2),
+            ) || user.email.startsWith(normalizedSearch.substring(0, 2)),
         ); // Filter by the first 3 letters
       // Sort users alphabetically
-      userInfo.sort((a, b) => a.searchLastName.localeCompare(b.searchLastName));
+      userInfo.sort(
+        (a, b) =>
+          a.searchDisplayName.localeCompare(b.searchDisplayName) ||
+          a.email.localeCompare(b.email),
+      );
       // Update the state with the fetched data
       setUsers(userInfo);
     } catch (error) {
@@ -137,7 +144,7 @@ export default function Search({navigation}) {
           placeholder="Type Friend's Name"
           placeholderTextColor="#BFBFBF"
           onChangeText={search => {
-            if (search.length >= 4) {
+            if (search.length >= 2) {
               fetchUsers(search);
             } else {
               setUsers([]);
