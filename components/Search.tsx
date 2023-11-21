@@ -110,7 +110,7 @@ export default function Search({navigation}) {
         if (existingRequests.size === 0) {
           // If no existing requests are found, send the friend request
           await addDoc(friendRequestsCollection, {
-            // senderId: uid,
+            senderId: uid,
             receiverId,
             status: 'pending',
             senderEmail: email,
