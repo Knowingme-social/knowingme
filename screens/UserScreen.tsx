@@ -276,7 +276,7 @@ export default function UserScreen({navigation}) {
               onPress={() => {
                 FIREBASE_AUTH.signOut();
                 GoogleSignin.signOut();
-                navigation.push('Login');
+
                 // navigation.navigate(() => {
                 //   Login;
                 //});

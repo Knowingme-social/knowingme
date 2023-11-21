@@ -55,6 +55,9 @@ export default function SignUp({navigation}) {
         firstName: firstName,
         lastName: lastName,
         searchLastName: lastName.toLowerCase(),
+        searchFirstName: firstName.toLowerCase(),
+        searchDisplayName:
+          firstName.toLowerCase() + ' ' + lastName.toLowerCase(),
         email: FIREBASE_AUTH.currentUser?.email,
         emailVerified: FIREBASE_AUTH.currentUser?.emailVerified,
         picture: defaultPicture,

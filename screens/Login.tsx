@@ -63,6 +63,8 @@ export default function Login({navigation}) {
               firstName: firstN,
               lastName: lastN,
               searchLastName: lastN?.toLowerCase(),
+              searchFirstName: firstN?.toLowerCase(),
+              searchDisplayName: user.displayName?.toLocaleLowerCase(),
               email: user.email,
               emailVerified: user.emailVerified,
               picture: defaultPicture,
