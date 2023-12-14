@@ -13,6 +13,7 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -20,6 +21,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
 import GoBackButton from './goback';
+import FriendRequest from './FriendRequest';
 //import {oneUser} from './EditProfile';
 
 export default function Search({navigation}) {
@@ -118,6 +120,7 @@ export default function Search({navigation}) {
             firstName: userInfo.firstName,
             lastName: userInfo.lastName,
             displayName: userInfo.displayName,
+            picture: userInfo.picture,
           });
           console.log('Friend request sent');
         } else {
@@ -131,7 +134,8 @@ export default function Search({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}>   
+        {/* <FriendRequest navigation={navigation} /> */}
       <View style={styles.searchContainer}>
         <Entypo name="magnifying-glass" size={24} color="black" />
         <TextInput
@@ -160,19 +164,25 @@ export default function Search({navigation}) {
         horizontal={false}
         data={users}
         keyExtractor={users => users.userId} // Add a key extractor
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.cardText}>
-              {item.firstName} {item.lastName}
-            </Text>
+            <View style={styles.profilePicContainer}>
+              <Image
+                source={{ uri: item.picture }}
+                style={styles.profilePic}
+              />
+              <Text style={styles.nameWithPic}>
+                {item.firstName} {item.lastName}
+              </Text>
+            </View>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.addButton}
               onPress={() => {
-                console.log('sent');
+                console.log('add request sent');
                 sendFriendRequest(item.email, item.userId);
                 navigation.pop();
               }}>
-              <Text style={styles.buttonText}>Send Friend Request</Text>
+              <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -182,8 +192,24 @@ export default function Search({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  profilePicContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  profilePic: {
+    width: 65, // Adjust the size as needed
+    height: 65, // Adjust the size as needed
+    borderRadius: 40, // Half the width/height to make it circular
+    marginRight: 10, // Space between the picture and the name
+  },
+  nameWithPic: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    // Remove marginBottom if it's no longer necessary
+  },
   container: {
-    flex: 1,
     paddingTop: 100,
     paddingHorizontal: 20,
     backgroundColor: '#F5F5F5',
@@ -204,8 +230,11 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: 20,
+    padding: 12,
     marginBottom: 10,
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Center items vertically within the card
+    justifyContent: 'space-between', // Space between the profile and the button
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -214,6 +243,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  addButton: {
+    backgroundColor: 'grey',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontFamily: 'HelveticaNeue-Light',
   },
   cardText: {
     fontSize: 16,
@@ -251,4 +293,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: 'blue',
   },
+  
 });

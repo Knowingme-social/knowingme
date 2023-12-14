@@ -7,7 +7,8 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  ScrollView,
+  Image,  // Added import for Image
+  TouchableOpacity, // Added import for TouchableOpacity
 } from 'react-native';
 
 import {
@@ -22,7 +23,9 @@ import {
 } from 'firebase/firestore';
 import {onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
-import GoBackButton from './goback';
+import Search from './Search'; // Added import for Search component
+import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install this package
+
 
 export default function FriendRequest({navigation}) {
   const [user, setUser] = useState(null);
@@ -77,7 +80,7 @@ export default function FriendRequest({navigation}) {
         setUsers(usersData);
       }
     };
-    //console.log(user?.id);
+
     const loadFriendRequests = async () => {
       if (user) {
         const friendRequestsCollection = collection(
@@ -94,10 +97,10 @@ export default function FriendRequest({navigation}) {
           id: doc.id,
           ...doc.data(),
         }));
-        //console.log(friendRequestsData);
         setFriendRequests(friendRequestsData);
       }
     };
+
     const loadFriends = async () => {
       if (user) {
         const friendsCollection = collection(FIRESTORE_DB, 'friends');
@@ -110,7 +113,6 @@ export default function FriendRequest({navigation}) {
           id: doc.id,
           ...doc.data(),
         }));
-        //console.log(friendsData);
         setFriends(friendsData);
       }
     };
@@ -128,6 +130,7 @@ export default function FriendRequest({navigation}) {
     firstname,
     lastname,
     displayname,
+    picture,
   ) => {
     // Update the friend request status to "accepted"
     const friendRequestsCollection = collection(FIRESTORE_DB, 'friendRequests');
@@ -143,6 +146,7 @@ export default function FriendRequest({navigation}) {
       firstName: firstname,
       lastName: lastname,
       displayName: displayname,
+      picture: picture,
     });
     await addDoc(friendsCollection, {
       friendId: receiverId,
@@ -150,6 +154,7 @@ export default function FriendRequest({navigation}) {
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
       displayName: userInfo.displayName,
+      picture: userInfo.picture,
     });
   };
 
@@ -190,111 +195,151 @@ export default function FriendRequest({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Friend Requests:</Text>
-          <FlatList
-            data={friendRequests}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <View style={styles.item}>
-                <Text style={styles.itemText}>
-                  {item.firstName + ' ' + item.lastName} wants to be your
-                  friend.
-                </Text>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title="Accept"
-                    onPress={() => {
-                      navigation.pop();
-                      acceptFriendRequest(
-                        item.id,
-                        item.senderId,
-                        item.senderEmail,
-                        item.receiverId,
-                        item.firstName,
-                        item.lastName,
-                        item.displayName,
-                      );
-                    }}
-                  />
-                  <Button
-                    title="Decline"
-                    onPress={() => {
-                      navigation.pop();
-                      declineFriendRequest(item.id);
-                    }}
-                  />
-                </View>
+    <View style={styles.Searchcontainer}>
+      <Search navigation={navigation} />
+      <FlatList
+        data={friendRequests}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Image source={{ uri: item.picture }} style={styles.profileImage} />
+            <View style={styles.itemTextContainer}>
+              <Text style={styles.itemText}>
+               Accept {item.firstName + ' ' + item.lastName}?
+              </Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Accept"
+                  onPress={() => {
+                    navigation.pop();
+                    acceptFriendRequest(
+                      item.id,
+                      item.senderId,
+                      item.senderEmail,
+                      item.receiverId,
+                      item.firstName,
+                      item.lastName,
+                      item.displayName,
+                      item.picture,
+                    );
+                  }}
+                />
+                <Button
+                  title="Decline"
+                  onPress={() => {
+                    navigation.pop();
+                    declineFriendRequest(item.id);
+                  }}
+                />
               </View>
-            )}
-          />
-        </View>
+            </View>
+          </View>
+        )}
+        // ListHeaderComponent={() => (
+        //   <Text style={styles.sectionTitle}>Friend Requests:</Text>
+        // )}
+      />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Friends:</Text>
-          <FlatList
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Friends</Text>
+        <FlatList
             data={friends}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <View style={styles.item}>
-                <Text style={styles.itemText}>
-                  {item.firstName + ' ' + item.lastName} is your friend.
-                </Text>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title="Delete"
-                    onPress={() => {
-                      deleteFriend(item.friendId);
-                    }}
-                  />
-                </View>
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <View style={styles.item}>
+               <Image source={{ uri: item.picture }} style={styles.profileImage} />
+              <Text style={styles.itemText}>
+                {item.firstName + ' ' + item.lastName}
+              </Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteFriend(item.friendId);
+                  }}
+                >
+                   <Text style={styles.deleteButtonText}>Delete</Text>
+                  </TouchableOpacity>
               </View>
-            )}
-          />
-        </View>
-        <View>
-          <Pressable onPress={() => navigation.pop()}>
-            <Text style={{color: 'blue'}}> Go Back </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-      <View style={{bottom: 820}}>
-        <GoBackButton navigation={navigation} />
+            </View>
+          )}
+        />
+      </View>
+      <View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
+  deleteButtonText: {
+    color: 'white',
     fontWeight: 'bold',
-    marginTop: 100,
+    fontFamily: 'HelveticaNeue-Light',
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 10,
-    backgroundColor: '#f9c2ff',
-    marginVertical: 5,
-    borderRadius: 5,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Center items vertically within the card
+    justifyContent: 'space-between', // Space between the profile and the button
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   itemText: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 50,
+    fontSize: 18,            
+    fontWeight: 'bold',         
+    textAlign: 'center',        
+    paddingVertical: 5,       
+    backgroundColor: '#ffffff', 
   },
   buttonContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+      backgroundColor: 'grey',
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
   },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  sectionTitle: {
+    padding: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+   marginLeft: 142,
+  },
+  friendRequestItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    marginVertical: 5,
+    borderRadius: 8,
+  },
+  friendRequestTextContainer: {
+    flex: 1,
+  },
+  friendRequestText: {
+    fontSize: 16,
+  },
+  section:{
+    padding: 10,
+  }
 });
