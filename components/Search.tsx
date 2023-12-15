@@ -1,8 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import {
   View,
   Text,
@@ -22,10 +17,8 @@ import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
 import GoBackButton from './goback';
 import FriendRequest from './FriendRequest';
-//import {oneUser} from './EditProfile';
 
 export default function Search({navigation}) {
-  // Use an array to store user data
   const [users, setUsers] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const uid = FIREBASE_AUTH.currentUser?.uid;
@@ -46,21 +39,18 @@ export default function Search({navigation}) {
           id: doc.id,
           ...doc.data(),
         }))
-        // Exclude the currently signed-in user
         .filter(user => user.userId !== uid)
         .filter(
           user =>
             user.searchDisplayName.startsWith(
               normalizedSearch.substring(0, 2),
             ) || user.email.startsWith(normalizedSearch.substring(0, 2)),
-        ); // Filter by the first 3 letters
-      // Sort users alphabetically
+        );
       userInfo.sort(
         (a, b) =>
           a.searchDisplayName.localeCompare(b.searchDisplayName) ||
           a.email.localeCompare(b.email),
       );
-      // Update the state with the fetched data
       setUsers(userInfo);
     } catch (error) {
       console.log(error);
@@ -76,7 +66,6 @@ export default function Search({navigation}) {
 
       const snapshot = await getDocs(getUserData);
       if (!snapshot.empty) {
-        // Assuming only one document will match
         const userData = snapshot.docs[0].data();
         setUserInfo(userData);
       } else {
@@ -100,7 +89,6 @@ export default function Search({navigation}) {
           'friendRequests',
         );
 
-        // Check if a friend request already exists with the same senderId and receiverId
         const friendRequestQuery = query(
           friendRequestsCollection,
           where('senderId', '==', uid),
@@ -110,7 +98,6 @@ export default function Search({navigation}) {
         const existingRequests = await getDocs(friendRequestQuery);
 
         if (existingRequests.size === 0) {
-          // If no existing requests are found, send the friend request
           await addDoc(friendRequestsCollection, {
             senderId: uid,
             receiverId,
@@ -163,7 +150,7 @@ export default function Search({navigation}) {
         numColumns={1}
         horizontal={false}
         data={users}
-        keyExtractor={users => users.userId} // Add a key extractor
+        keyExtractor={users => users.userId}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.profilePicContainer}>
@@ -198,25 +185,24 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profilePic: {
-    width: 65, // Adjust the size as needed
-    height: 65, // Adjust the size as needed
-    borderRadius: 40, // Half the width/height to make it circular
-    marginRight: 10, // Space between the picture and the name
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
   nameWithPic: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
-    // Remove marginBottom if it's no longer necessary
   },
   container: {
     paddingTop: 100,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: '#F5F5F5',
   },
   searchContainer: {
     width: '100%',
-    height: 48,
+    height: 40,
     borderColor: '#BFBFBF',
     borderWidth: 1,
     borderRadius: 8,
@@ -232,9 +218,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
-    flexDirection: 'row', // Align items horizontally
-    alignItems: 'center', // Center items vertically within the card
-    justifyContent: 'space-between', // Space between the profile and the button
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -245,53 +231,17 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   addButton: {
-    backgroundColor: 'grey',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+      backgroundColor: 'grey',
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
   },
   addButtonText: {
     color: 'white',
     fontWeight: 'bold',
     fontFamily: 'HelveticaNeue-Light',
   },
-  cardText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-    fontFamily: 'HelveticaNeue-Light',
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#3CB371',
-    borderRadius: 8,
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontFamily: 'HelveticaNeue-Light',
-  },
-  textinputtitle: {
-    fontSize: 16,
-    marginVertical: 4,
-    color: 'black',
-  },
-  text: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'white',
-  },
-  textSignUp: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'blue',
-  },
-  
 });

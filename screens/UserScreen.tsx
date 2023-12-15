@@ -239,144 +239,104 @@ export default function UserScreen({navigation}) {
 
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#f4f4f4'}}>
         <ScrollView
           style={styles.container}
-          contentContainerStyle={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}>
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={shareInvite}>
+            <Icon name="share-social" size={30} color="#4F8EF7" />
+          </TouchableOpacity>
           <Image style={styles.userImg} source={profilePic} />
           <Text style={styles.userName}>
             {userData?.firstName} {userData?.lastName}
           </Text>
-          {/* <Text style={styles.aboutUser}>
-            About: Just an average Joe who likes to hike and bike, like a Mike!
-          </Text> */}
           <View style={styles.userBtnWrapper}>
             <TouchableOpacity
-              style={{
-                position: 'absolute',
-                top: -190,
-                right: 30,
-                zIndex: 1,
-              }}
-              onPress={shareInvite}>
-              <Icon name="share-sharp" size={30} color="black" />
-              <Text>share</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.userBtn}
+              style={styles.editProfileBtn}
               onPress={() => navigation.push('Edit Profile')}>
+              <Icon name="pencil" size={20} color="#FFFFFF" />
               <Text style={styles.userBtnTxt}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.userBtn}
+              style={styles.friendsBtn}
               onPress={() => {
-                FIREBASE_AUTH.signOut();
-                GoogleSignin.signOut();
-
-                // navigation.navigate(() => {
-                //   Login;
-                //});
+                navigation.push('FriendRequest');
               }}>
-              <Text style={styles.userBtnTxt}>Sign Out</Text>
+              <Icon name="people" size={20} color="#FFFFFF" />
+              <Text style={styles.userInfoTitle}>Friends</Text>
             </TouchableOpacity>
           </View>
-          <View></View>
-          <View style={styles.userInfoWrapper}>
-            <View style={styles.userInfoItem}></View>
-            <View style={styles.userInfoItem}></View>
-
-            <View style={styles.userInfoItem}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push('Search');
-                }}>
-                <Text style={styles.userInfoTitle}>Add</Text>
-                <Text style={styles.userInfoSubTitle}>Friends</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.userInfoItem}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push('FriendRequest');
-                }}>
-                <Text style={styles.userInfoTitle}> Friend</Text>
-                <Text style={styles.userInfoSubTitle}>Requests</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View></View>
         </ScrollView>
       </SafeAreaView>
     </>
   );
-}
+}  
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f4f4',
+  },
+  contentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  shareButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 10,
   },
   userImg: {
     height: 150,
     width: 150,
     borderRadius: 75,
-    padding: 85,
+    marginTop: 20,
     marginBottom: 10,
   },
   userName: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  aboutUser: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-    textAlign: 'center',
+    color: '#333333',
     marginBottom: 10,
   },
   userBtnWrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     width: '100%',
-    marginBottom: 10,
+    marginBottom: 20,
   },
-  userBtn: {
-    borderColor: 'black',
-    borderWidth: 2,
-    borderRadius: 3,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginHorizontal: 5,
+  editProfileBtn: {
+    backgroundColor: '#4F8EF7',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  friendsBtn: {
+    backgroundColor: '#4F8EF7',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   userBtnTxt: {
-    color: 'black',
-  },
-  userInfoWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginVertical: 20,
-  },
-  userInfoItem: {
-    justifyContent: 'center',
+    color: '#FFFFFF',
+    marginLeft: 10,
+    fontWeight: '600',
   },
   userInfoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    marginRight: 70,
-    textAlign: 'center',
-  },
-  userInfoSubTitle: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
-    marginRight: 66,
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginLeft: 10,
+    fontWeight: '600',
   },
 });
