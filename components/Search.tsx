@@ -166,14 +166,12 @@ export default function Search({navigation}) {
             <ThemedButton
             name="bruce"
             type='secondary'
-            width={100}  // Set the width as needed
-                  height={50}  // Set the height as needed
+                  width={100} 
+                  height={50} 
               style={styles.addButton}
               onPress={() => {
                 console.log('add request sent');
-                sendFriendRequest(item.email, item.userId);
-                navigation.pop();
-                
+                sendFriendRequest(item.email, item.userId);                
               }}> 
               <Text style={styles.addButtonText}>Add</Text>
             </ThemedButton>

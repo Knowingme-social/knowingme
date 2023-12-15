@@ -267,7 +267,7 @@ export default function EditProfile({navigation}) {
         <View style={styles.commandButton}>
         <ThemedButton
       name="cartman"
-      type="secondary"
+      type="primary"
       progress
       onPress={async (next) => {
         await updateUser();

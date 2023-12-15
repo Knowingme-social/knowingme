@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, FlatList, Button} from 'react-native';
+import {StyleSheet, View, Text, FlatList, SafeAreaView} from 'react-native';
 import React from 'react';
 import {FIRESTORE_DB, FIREBASE_AUTH} from '../firebaseConfig';
 import {collection, deleteDoc, doc, onSnapshot} from 'firebase/firestore';
@@ -79,77 +79,73 @@ export default function History({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Your History</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Your History</Text>
+        </View>
+        {dailyData.length > 0 && (
+          <FlatList
+            data={dailyData}
+            renderItem={item => renderData(item)}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        )}
       </View>
-      {dailyData.length >= 0 && (
-        <FlatList
-          data={dailyData}
-          renderItem={item => renderData(item)}
-          keyExtractor={(dailyData: Daily) => dailyData.id}
-        />
-      )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#ffffff', // Match this with the header background color
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f0', // Parchment-like background
+    backgroundColor: '#f0f0f0', // Updated to a lighter background
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    width: '100%', // Make the header full-width
-    padding: 80,
-    backgroundColor: '#c0b283', // Gold-like background
-    borderTopEndRadius: 20, // Rounded top right corner
-    borderTopStartRadius: 20, // Rounded top left corner
-    borderBottomEndRadius: 20, // Rounded bottom right corner (optional)
-    borderBottomStartRadius: 20, // Rounded bottom left corner (optional)
-    marginTop: 0, // Add some margin at the top
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    alignItems: 'center', // Center the text horizontally
-    justifyContent: 'center', // Center the text vertically
-    height: 100,
+    width: '100%',
+    padding: 20, // Reduced padding for a more minimalist header
+    backgroundColor: '#ffffff', // White background for a clean look
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 60, // Shorter header
+    borderBottomWidth: 1, // Subtle border
+    borderBottomColor: '#e0e0e0', // Soft border color
   },
   headerText: {
     fontSize: 24,
-    color: '#003300', // Deep green color
-    fontFamily: 'Roboto', // Consider using a custom vintage font
+    color: '#333333', // Darker text for better contrast
+    fontFamily: 'Roboto', // Maintained the font for consistency
     fontWeight: 'bold',
-    marginBottom: -40,
+    marginTop: -20, // Added some bottom margin for hierarchy
   },
   QuestionText: {
-    flex: 1,
-    padding: 10,
-    fontSize: 17,
-    color: '#003300', // Deep green color
-    fontFamily: 'Roboto', // Consider a font like 'Times New Roman' or a custom vintage font
+    fontSize: 16, // Slightly reduced size for a cleaner look
+    color: '#333333',
+    fontFamily: 'Roboto',
+    marginBottom: 4, // Space between question and answer
   },
   AnswerText: {
-    flex: 1,
-    padding: 10,
-    fontSize: 12,
-    color: '#003300',
+    fontSize: 14, // Smaller font size for the answer for hierarchy
+    color: '#4f4f4f', // Slightly lighter color for contrast
     fontFamily: 'Roboto',
   },
   card: {
-    backgroundColor: '#eae8df', // Card color
-    margin: 10,
-    padding: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#c0b283', // Gold-like border
+    backgroundColor: '#ffffff', // White cards for a clean design
+    marginVertical: 8, // More vertical space between cards
+    padding: 16, // Padding adjusted for content
+    borderRadius: 12, // Rounded corners
+    borderWidth: 0, // No border for a cleaner look
     shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 2 }, // Refined shadow for depth
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
   button: {
     backgroundColor: '#c0b283', // Gold-like button

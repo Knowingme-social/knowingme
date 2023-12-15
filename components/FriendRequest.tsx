@@ -215,7 +215,6 @@ export default function FriendRequest({navigation}) {
                 width={100} 
                 style={{ marginRight: 40 }}
                   onPress={() => {
-                    navigation.pop();
                     acceptFriendRequest(
                       item.id,
                       item.senderId,
@@ -237,7 +236,6 @@ export default function FriendRequest({navigation}) {
                 style={{ marginRight: 220 }}
                   title="Decline"
                   onPress={() => {
-                    navigation.pop();
                     declineFriendRequest(item.id);
                   }}
                 >
