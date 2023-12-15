@@ -277,11 +277,23 @@ export default function UserScreen({navigation}) {
 
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#f4f4f4'}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#e5e6df'}}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}>
+            <TouchableOpacity
+              style={styles.userBtn}
+              onPress={() => {
+                FIREBASE_AUTH.signOut();
+                GoogleSignin.signOut();
+
+                // navigation.navigate(() => {
+                //   Login;
+                //});
+              }}>
+              <Text style={styles.userBtnTxt}>Sign Out</Text>
+            </TouchableOpacity>
           <TouchableOpacity
             style={styles.shareButton}
             onPress={shareInvite}>
@@ -293,23 +305,23 @@ export default function UserScreen({navigation}) {
           </Text>
           <View style={styles.userBtnWrapper}>
             <ThemedButton
-            name="rick"
+            name="cartman"
             type='primary'
             width={150}
               style={styles.editProfileBtn}
               onPress={() => navigation.push('Edit Profile')}>
-              <Icon name="pencil" size={20} color="#FFFFFF" />
+              <Icon name="pencil" size={20} color="black" />
               <Text style={styles.userBtnTxt}>Edit Profile</Text>
             </ThemedButton>
             <ThemedButton
-            name="rick"
+            name="cartman"
             type='primary'
             width={150}
               style={styles.friendsBtn}
               onPress={() => {
                 navigation.push('FriendRequest');
               }}>
-              <Icon name="people" size={20} color="#FFFFFF" />
+              <Icon name="people" size={20} color="black" />
               <Text style={styles.userInfoTitle}>Friends</Text>
             </ThemedButton>
           </View>
@@ -348,7 +360,7 @@ export default function UserScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#e5e6df',
   },
   contentContainer: {
     justifyContent: 'center',
@@ -397,13 +409,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userBtnTxt: {
-    color: '#FFFFFF',
+    fontSize: 16,
+    color: 'black',
     marginLeft: 10,
     fontWeight: '600',
   },
   userInfoTitle: {
-    fontSize: 18,
-    color: '#FFFFFF',
+    fontSize: 16,
+    color: 'black',
     marginLeft: 10,
     fontWeight: '600',
   },

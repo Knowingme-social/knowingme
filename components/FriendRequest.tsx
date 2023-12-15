@@ -205,12 +205,15 @@ export default function FriendRequest({navigation}) {
           <View style={styles.item}>
             <Image source={{ uri: item.picture }} style={styles.profileImage} />
             <View style={styles.itemTextContainer}>
-              <Text style={styles.itemText}>
+              <Text style={styles.requestText}>
                Accept {item.firstName + ' ' + item.lastName}?
               </Text>
               <View style={styles.buttonContainer}>
-                <Button
-                  title="Accept"
+                <ThemedButton
+                name="bruce"
+                type='secondary'
+                width={100} 
+                style={{ marginRight: 40 }}
                   onPress={() => {
                     navigation.pop();
                     acceptFriendRequest(
@@ -224,14 +227,22 @@ export default function FriendRequest({navigation}) {
                       item.picture,
                     );
                   }}
-                />
-                <Button
+                >
+                  Accept
+                  </ThemedButton>
+                <ThemedButton
+                name="bruce"
+                type='secondary'
+                width={100} 
+                style={{ marginRight: 220 }}
                   title="Decline"
                   onPress={() => {
                     navigation.pop();
                     declineFriendRequest(item.id);
                   }}
-                />
+                >
+                  Decline
+                  </ThemedButton>
               </View>
             </View>
           </View>
@@ -274,6 +285,11 @@ export default function FriendRequest({navigation}) {
 }
 
 const styles = StyleSheet.create({
+requestText: {
+fontSize: 18,
+fontFamily: 'American Typewriter',
+fontWeight: 'bold',
+},
   deleteButtonText: {
     color: 'black',
     fontWeight: 'bold',
@@ -309,10 +325,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
       borderRadius: 8,
       paddingVertical: 15,
-      paddingHorizontal: 25,
+      paddingHorizontal: 105,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'black',
   },
   profileImage: {
     width: 50,

@@ -41,59 +41,24 @@ export default function NavBar() {
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          backgroundColor: 'rgba(89, 89, 86 0.2)', // Semi-transparent white
+          borderRadius: 20, // Rounded corners
+          marginHorizontal: 10, // Space from edges
+          position: 'absolute', // Ensures the style is applied correctly
+          bottom: 5, // Adjust as needed
+          left: 15,
+          right: 15,
+          elevation: 0, // Removes shadow on Android
+          shadowOpacity: 0, // Removes shadow on iOS
+          height: 80, // Adjust height as needed
+        },
       })}
     >
       <Tab.Screen name="User" component={UserScreen} options={{headerShown: false}} />
       <Tab.Screen name="History" component={History} options={{headerShown: false}} />
       <Tab.Screen name="FriendsQuestions" component={FriendsQuestions} options={{headerShown: false}} />
-      
-      {/* Replace LoginScreen with the actual component you navigate to on sign out */}
       <Tab.Screen name="WhoKnowsWho" component={WhoKnowsWho} options={{headerShown: false}} />
     </Tab.Navigator>
   );
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    borderRadius: 20,
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-    paddingVertical: 10,
-  },
-  input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: 'black',
-  },
-  button: {
-    height: 45,
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  text: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'black',
-  },
-});
