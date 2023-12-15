@@ -25,6 +25,9 @@ import {
 import {storageRef, FIREBASE_STORAGE} from '../firebaseConfig';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {uploadBytes, getDownloadURL} from 'firebase/storage';
+import GoBackButton from './goback';
+import { ThemedButton } from 'react-native-really-awesome-button';
+
 
 export interface oneUser {
   firstName: string;
@@ -64,6 +67,7 @@ export default function EditProfile({navigation}) {
         console.log(error);
       });
   };
+
   //adding picture to firebase storage and get back a url for it.
   const handleUpload = async (imageUri: RequestInfo) => {
     try {
@@ -151,54 +155,32 @@ export default function EditProfile({navigation}) {
     uri: userData?.picture || defaultPicture,
   };
 
+
   return (
     <View style={styles.container}>
       <View style={{margin: 20}}>
         <View style={{alignItems: 'center'}}>
-          <TouchableOpacity onPress={imagePicker}>
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <ImageBackground
-                source={profilePic}
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 15}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Entypo name="camera" size={35} color="black" />
-                </View>
-              </ImageBackground>
-            </View>
-          </TouchableOpacity>
+        <View style={styles.header}>
+        <TouchableOpacity onPress={imagePicker} style={styles.profilePicContainer}>
+         <ImageBackground
+          source={profilePic}
+           style={styles.profilePic}
+          imageStyle={styles.profilePicImage}>
+          <Entypo name="camera" size={30} color="#fffff" style={styles.cameraIcon} /> 
+         </ImageBackground>
+        </TouchableOpacity>
+        <Text style={styles.fullName}>{userData?.firstName} {userData?.lastName}</Text>
+      </View>
+     </View>
+    <View style={styles.textInputBox}>
           <Text
             style={{
-              marginTop: 10,
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: 'black',
-            }}>
-            {userData?.firstName} {userData?.lastName}
-          </Text>
-        </View>
-
-        <View style={styles.textInputBox}>
-          <Text
-            style={{
-              paddingLeft: 10,
+              paddingLeft: 0.71,
               color: 'black',
               marginVertical: 8,
               width: '25%',
             }}>
-            First Name :
+            First Name
           </Text>
           <TextInput
             autoCorrect={false}
@@ -216,12 +198,11 @@ export default function EditProfile({navigation}) {
         <View style={styles.textInputBox}>
           <Text
             style={{
-              paddingLeft: 10,
               color: 'black',
               marginVertical: 8,
               width: '25%',
             }}>
-            Last Name :
+            Last Name
           </Text>
           <TextInput
             autoCorrect={false}
@@ -239,12 +220,12 @@ export default function EditProfile({navigation}) {
         <View style={styles.textInputBox}>
           <Text
             style={{
-              paddingLeft: 10,
+              
               color: 'black',
               marginVertical: 8,
               width: '15%',
             }}>
-            Email :
+            Email
           </Text>
           <TextInput
             autoCorrect={false}
@@ -262,12 +243,12 @@ export default function EditProfile({navigation}) {
         <View style={styles.textInputBox}>
           <Text
             style={{
-              paddingLeft: 10,
+              paddingLeft: 1,
               color: 'black',
               marginVertical: 8,
               width: '17%',
             }}>
-            Phone :
+            Phone
           </Text>
           <TextInput
             autoCorrect={false}
@@ -283,60 +264,104 @@ export default function EditProfile({navigation}) {
             style={{width: '83%'}}
           />
         </View>
-        <TouchableOpacity style={styles.commandButton} onPress={updateUser}>
-          <Text style={styles.panelButtonTitle}>Save</Text>
-        </TouchableOpacity>
+        <View style={styles.commandButton}>
+        <ThemedButton
+      name="cartman"
+      type="secondary"
+      progress
+      onPress={async (next) => {
+        await updateUser();
+        next(); // Call this function when your update process is complete
+      }}
+    >
+      Save
+    </ThemedButton>
+        </View>  
       </View>
       <View>
-        <Pressable onPress={() => navigation.pop()}>
-          <Text style={{color: 'blue'}}> Go Back </Text>
-        </Pressable>
+      <View style={{position: 'absolute', top: -15, left: 0}}>
+          <GoBackButton navigation={navigation} />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: {  
     flex: 1,
+    backgroundColor: '#fff',
   },
   textInputBox: {
-    marginVertical: 8,
-    width: '100%',
-    height: 40,
-    borderBlockColor: 'black',
-    borderWidth: 1,
-    borderRadius: 8,
     flexDirection: 'row',
-  },
-  commandButton: {
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#3CB371',
     alignItems: 'center',
-    marginTop: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#ccc', // A light grey for subtle underlining
+    marginVertical: 10, // Adds vertical spacing between each input box
+    marginHorizontal: 20, // Side margins for the input boxes
+  },
+  inputLabel: {
+    color: '#333', // A darker grey for the label for better readability
+    width: '30%', // Width of the label, can adjust based on screen size
+    fontSize: 16, // Slightly larger font size for readability
+    fontWeight: '600', // Medium weight for the label text
+    paddingVertical: 15, // Vertical padding for touch area and visual comfort
+  },
+  textInput: {
+    flex: 1, // Take up remaining space
+    fontSize: 16, // Matching the label size for consistency
+    color: '#333', // Text color to match the label
+    paddingHorizontal: 10, // Horizontal padding for the input area
+    paddingVertical: 15, // Vertical padding for touch area and visual comfort
+    // Remove the border and let the borderBottom of the container show through
+  },
+  appButtonContainer: {
+    elevation: 8,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  },
+  screenContainer: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 16
+  },
+  // Button styles
+  commandButton: {
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    marginVertical: 20,
+    marginHorizontal: 20,
+    // Add any additional styling here for the Cartman theme
+  },
+  panelButtonTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white', // Update if needed
+    // Add any additional styling here for the Cartman theme
+  },
+  // Style for the back button if necessary
+  backButton: {
+    fontSize: 16,
+    color: '#333', // Same as the text color for consistency
+    textAlign: 'center', // Center the text if it's not already wrapped in a touchable
+    marginVertical: 20, // Spacing from the bottom of the screen or element above
   },
   panel: {
     padding: 20,
     backgroundColor: '#FFFFFF',
     paddingTop: 20,
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
-    // shadowColor: '#000000',
-    // shadowOffset: {width: 0, height: 0},
-    // shadowRadius: 5,
-    // shadowOpacity: 0.4,
-  },
-  header: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
-    // elevation: 5,
-    paddingTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
   panelHeader: {
     alignItems: 'center',
@@ -365,11 +390,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 7,
   },
-  panelButtonTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'white',
-  },
   action: {
     flexDirection: 'row',
     marginTop: 10,
@@ -385,10 +405,71 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FF0000',
     paddingBottom: 5,
   },
-  textInput: {
-    flex: 1,
-
-    paddingLeft: 10,
-    color: '#05375a',
+  header: {
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#D6EAF8',
+  },
+  profilePicContainer: {
+    height: 150,
+    width: 150,
+    borderRadius: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    overflow: 'hidden',
+    marginTop: 20,
+  },
+  profilePic: {
+    height: '100%',
+    width: '100%',
+  },
+  profilePicImage: {
+    borderRadius: 60,
+  },
+  cameraIcon: {
+    position: 'absolute',
+    bottom: 3,
+    right: 30,
+    padding: 5,
+    borderRadius: 15,
+    color: '#fff',
+  },
+  fullName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50', // Dark text color for the name
+    marginTop: 5,
+  },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#AED6F1', // Light blue color for the input bottom border
+    paddingBottom: 5,
+    marginBottom: 20,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  saveButton: {
+    backgroundColor: '#3498DB', // A blue color for the save button
+    borderRadius: 20,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 10,
+  },
+  saveButtonText: {
+    fontSize: 18,
+    color: '#FFFFFF', // White color for the save button text
+    fontWeight: 'bold',
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#3498DB', // Same blue color as the save button for consistency
   },
 });

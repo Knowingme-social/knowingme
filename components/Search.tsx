@@ -17,6 +17,7 @@ import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import {collection, where, query, getDocs, addDoc} from 'firebase/firestore';
 import GoBackButton from './goback';
 import FriendRequest from './FriendRequest';
+import { ThemedButton } from 'react-native-really-awesome-button';
 
 export default function Search({navigation}) {
   const [users, setUsers] = useState([]);
@@ -162,15 +163,20 @@ export default function Search({navigation}) {
                 {item.firstName} {item.lastName}
               </Text>
             </View>
-            <TouchableOpacity
+            <ThemedButton
+            name="bruce"
+            type='secondary'
+            width={100}  // Set the width as needed
+                  height={50}  // Set the height as needed
               style={styles.addButton}
               onPress={() => {
                 console.log('add request sent');
                 sendFriendRequest(item.email, item.userId);
                 navigation.pop();
-              }}>
+                
+              }}> 
               <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity>
+            </ThemedButton>
           </View>
         )}
       />
@@ -240,7 +246,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
   },
   addButtonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     fontFamily: 'HelveticaNeue-Light',
   },

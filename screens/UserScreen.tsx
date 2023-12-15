@@ -15,11 +15,13 @@ import {
   TouchableOpacity,
   LogBox,
   Share,
+  TextInput,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { ProgressBar, MD2Colors, MD3Colors} from 'react-native-paper';
 
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
@@ -31,9 +33,11 @@ import {
   setDoc,
   getDoc,
   serverTimestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import {oneUser} from '../components/EditProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemedButton } from 'react-native-really-awesome-button';
 
 //need that to ignore annoying navigation console error/comment it out when need to test new additions
 LogBox.ignoreAllLogs();
@@ -48,6 +52,9 @@ export default function UserScreen({navigation}) {
   const [answerOP4, setAnswer4] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [newTag, setNewTag] = useState('');
+  const [tags, setTags] = useState([]);
+
 
   const uid = FIREBASE_AUTH.currentUser?.uid;
   const firstname = userData?.firstName;
@@ -62,6 +69,27 @@ export default function UserScreen({navigation}) {
       });
     }
   }
+
+  const Tag = ({ text, onDelete }) => (
+    <View style={styles.tag}>
+      <Text style={styles.tagText}>{text}</Text>
+      <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+        <Text style={styles.deleteButtonText}>×</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const addTag = () => {
+    if (newTag.trim().length > 0) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag(''); // Clear the input field after adding a tag
+    }
+  };
+
+  const removeTag = (indexToRemove) => {
+    setTags(tags.filter((_, index) => index !== indexToRemove));
+  };
+  
 
   //pulls in answer of the day from the async storage.
   useEffect(() => {
@@ -102,6 +130,16 @@ export default function UserScreen({navigation}) {
     setLoading(false);
   }, [uid]);
 
+  useEffect(() => {
+    // Assuming 'uid' is the current user's ID and 'FIRESTORE_DB' is your Firestore instance
+    const userDocRef = doc(FIRESTORE_DB, 'users', uid);
+    updateDoc(userDocRef, {
+      tags: tags,
+    }).catch((error) => {
+      console.error("Error updating tags: ", error);
+    });
+  }, [tags]);
+  
   //checks if there is an answer of the day and
   //user is logged in before adding answer to DB
 
@@ -254,21 +292,53 @@ export default function UserScreen({navigation}) {
             {userData?.firstName} {userData?.lastName}
           </Text>
           <View style={styles.userBtnWrapper}>
-            <TouchableOpacity
+            <ThemedButton
+            name="rick"
+            type='primary'
+            width={150}
               style={styles.editProfileBtn}
               onPress={() => navigation.push('Edit Profile')}>
               <Icon name="pencil" size={20} color="#FFFFFF" />
               <Text style={styles.userBtnTxt}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </ThemedButton>
+            <ThemedButton
+            name="rick"
+            type='primary'
+            width={150}
               style={styles.friendsBtn}
               onPress={() => {
                 navigation.push('FriendRequest');
               }}>
               <Icon name="people" size={20} color="#FFFFFF" />
               <Text style={styles.userInfoTitle}>Friends</Text>
-            </TouchableOpacity>
+            </ThemedButton>
           </View>
+          <View style={{ alignItems: 'center', padding: 20 }}>
+        {/* <Text style={{ fontSize: 16, color: '#333', textAlign: 'center' }}>
+           “Life isn’t about finding yourself. Life is about creating yourself.” – George Bernard Shaw
+       </Text> */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+  <TextInput
+    style={styles.tagInput}
+    placeholder="Add new interest..."
+    value={newTag}
+    onChangeText={setNewTag}
+    onSubmitEditing={addTag} // Add the tag when the user submits the input
+        />
+           <TouchableOpacity style={styles.addButton} onPress={addTag}>
+           <Text style={styles.addButtonText}>Add</Text>
+           </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.tagsContainer}>
+           {tags.map((tag, index) => (
+           <Tag
+            key={index}
+            text={tag}
+            onDelete={() => removeTag(index)}
+        />
+     ))}
+        </View>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -310,20 +380,18 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
   },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    marginVertical: 10,
+  },
   editProfileBtn: {
-    backgroundColor: '#4F8EF7',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   friendsBtn: {
-    backgroundColor: '#4F8EF7',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -337,6 +405,75 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFFFFF',
     marginLeft: 10,
+    fontWeight: '600',
+  },
+  tag: {
+    backgroundColor: '#ddeeff', // Soft color for the tag
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingLeft: 10,
+    paddingRight: 20, // Increase right padding to make room for the delete button
+    margin: 4,
+    flexDirection: 'row',
+    alignItems: 'center', // Align tag text and delete button on the same line
+  },
+  tagText: {
+    color: '#336699',
+  },
+  deleteButton: {
+    position: 'absolute', // Position the button absolutely relative to its parent
+    top: -5, // Adjust top position to align with the corner
+    right: -5, // Adjust right position to align with the corner
+    backgroundColor: 'rgba(255, 0, 0, 0.2)', // Semi-transparent red background
+    borderRadius: 10, // Circular button
+    width: 16, // Smaller width
+    height: 16, // Smaller height
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: '#ff0000', // Red text
+    fontWeight: 'bold',
+    fontSize: 14, // Smaller font size
+    lineHeight: 16, // Ensure the text is centered in the button
+  },
+  tagInput: {
+    backgroundColor: '#f7f7f7', // A soft background color
+    borderColor: '#dcdcdc', // A light border color
+    borderWidth: 1,
+    borderRadius: 25, // Fully rounded corners
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: '#333', // Soft text color for contrast
+    marginVertical: 5,
+    width: '90%', // Assuming you want it to take up most of the container width
+    alignSelf: 'center', // Center the input field in the container
+    shadowColor: "#000", // Shadow for depth
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // Elevation for Android
+  },
+  addButton: {
+    backgroundColor: '#758BFD', // Soft blue color for the button
+    borderRadius: 25,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2, // Elevation for Android
+    shadowOpacity: 0.2, // Shadow for iOS
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
     fontWeight: '600',
   },
 });

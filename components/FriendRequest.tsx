@@ -25,6 +25,7 @@ import {onAuthStateChanged} from 'firebase/auth';
 import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
 import Search from './Search'; // Added import for Search component
 import Icon from 'react-native-vector-icons/FontAwesome'; // Make sure to install this package
+import { ThemedButton } from 'react-native-really-awesome-button';
 
 
 export default function FriendRequest({navigation}) {
@@ -251,16 +252,18 @@ export default function FriendRequest({navigation}) {
               <Text style={styles.itemText}>
                 {item.firstName + ' ' + item.lastName}
               </Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
+                <ThemedButton
+                name="bruce"
+                type="secondary"
                   onPress={() => {
                     deleteFriend(item.friendId);
                   }}
+                  width={100}  // Set the width as needed
+                  height={50}  // Set the height as needed
                 >
                    <Text style={styles.deleteButtonText}>Delete</Text>
-                  </TouchableOpacity>
+                  </ThemedButton>
               </View>
-            </View>
           )}
         />
       </View>
@@ -272,7 +275,7 @@ export default function FriendRequest({navigation}) {
 
 const styles = StyleSheet.create({
   deleteButtonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     fontFamily: 'HelveticaNeue-Light',
   },
@@ -304,12 +307,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-      backgroundColor: 'grey',
       borderRadius: 8,
-      paddingVertical: 12,
+      paddingVertical: 15,
       paddingHorizontal: 25,
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: 'black',
   },
   profileImage: {
     width: 50,
