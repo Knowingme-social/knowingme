@@ -185,11 +185,17 @@ export default function WhoKnowsWho({navigation}) {
     );
   }
 
-  // Create a function to render statistics for each friend
   const renderStatistics = () => {
-    return Object.entries(friendStatistics).map(([friend, stats]) => (
-      <View key={friend}>
-        <Text>
+    // Sort the friends based on accuracy or another relevant metric
+    const sortedFriends = Object.entries(friendStatistics).sort((a, b) => {
+      return b[1].percentage - a[1].percentage; // Sorting in descending order of accuracy
+    });
+
+    // Render each friend's statistics in a sorted manner
+    return sortedFriends.map(([friend, stats], index) => (
+      <View key={friend} style={styles.statRow}>
+        <Text style={styles.rankText}>{index + 1}</Text>
+        <Text style={styles.friendText}>
           {friend}: Correct: {stats.correct}, Incorrect: {stats.incorrect},
           Accuracy: {stats.percentage.toFixed(2)}%
         </Text>
@@ -206,15 +212,15 @@ export default function WhoKnowsWho({navigation}) {
         }
         <Text>Statistics for 'Best Known you'</Text>;
       case 'bestKnownByOthers':
-        return <Text> {mostKnowledgeableFriend} knows you the best</Text>;
+        return <Text> {mostKnowledgeableFriend} knows you the best {renderStatistics()}</Text>;
         {
           renderStatistics();
         }
         <Text>Statistics for 'Best Known By Others'</Text>;
       case 'leastKnownByOthers':
-        return <Text> {leastKnownFriend} knows you the worst they suck</Text>;
+        return <Text> {leastKnownFriend} knows you the worst they suck {renderStatistics()}</Text>;
         {
-          renderStatistics();
+          
         }
         <Text>Statistics for 'Least Known By Others'</Text>;
       default:
@@ -224,6 +230,9 @@ export default function WhoKnowsWho({navigation}) {
 
   return (
     <View style={styles.card}>
+      <View style={styles.contentContainer}>
+
+    </View>
       <View style={styles.tabs}>
         {/* The tabs themselves stay the same color */}
         <TouchableOpacity
@@ -263,6 +272,46 @@ export default function WhoKnowsWho({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  statRow: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e1e1e1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+    marginBottom: 5,
+    backgroundColor: '#ffffff', // Use a white or off-white background for each row
+    marginHorizontal: 10, // Add horizontal margin for each row
+    marginTop: 10, // Add top margin for each row
+    borderRadius: 6, // Rounded corners for the rows
+    borderWidth: 1,
+    borderColor: '#eaeaea', // A very light border for each row
+    paddingHorizontal: 10, // Horizontal padding within the card
+    justifyContent: 'space-around', // This will distribute space evenly
+  },
+  rankText: {
+    fontWeight: 'bold',
+    fontSize: 18, // Larger font size for rank
+    color: 'white', // A distinct color for the rank
+    marginRight: 12,
+    backgroundColor: '#4a90e2', // Use a background color for the rank circle
+    borderRadius: 15, // Make the rank a circle or rounded square
+    width: 300, // Set width for the rank circle
+    height: 30, // Set height for the rank circle
+    textAlign: 'center', // Ensure the text is centered
+    lineHeight: 30, // Center the text vertically
+  },
+  friendText: {
+    fontSize: 16, // Readable font size
+    color: '#333', // A neutral color for text
+    flexShrink: 1, // This will allow the text to shrink and fit into the available space
+    marginRight: 10, // Add some right margin if necessary
+  },
+  
   slider: {
     position: 'absolute',
     height: 20,
@@ -272,7 +321,7 @@ const styles = StyleSheet.create({
     // Add other styling if needed
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#fffff',
     fontFamily: 'Times New Roman',
     // marginHorizontal: 20, // Added horizontal margin to provide space on both sides
     marginTop: 100,
@@ -281,7 +330,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    height: 700,
+    height: 500,
     overflow: 'hidden',
     zIndex: -2,
   },
@@ -326,5 +375,10 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingTop: 20, // Space between the top text and the leaderboard
+    paddingBottom: 50, // Space at the bottom
+    alignItems: 'center', // Center the leaderboard horizontally
+    justifyContent: 'flex-end', // Align the leaderboard to the bottom
+    flex: 1, // Takes up all available space
   },
 });

@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import {View, Text, TouchableOpacity, StyleSheet, Button} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {addDoc, collection, getDocs, query, where} from 'firebase/firestore';
-import {FIREBASE_AUTH, FIRESTORE_DB} from '../firebaseConfig';
-import {onAuthStateChanged} from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
-export default function FriendsQuestions({navigation}) {
+export default function FriendsQuestions({ navigation }) {
   const [user, setUser] = useState(null);
   const [friends, setFriends] = useState([]);
   const [friendIds, setFriendIds] = useState([]);
@@ -20,9 +20,10 @@ export default function FriendsQuestions({navigation}) {
   const [questionLastName, setQuestionlastName] = useState('');
   const [questionFirstName, setQuestionFirstName] = useState('');
   const [questionDisplayName, setQuestionDisplayName] = useState('');
+  const [feedbackColor, setFeedbackColor] = useState('');
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, user => {
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
     });
   }, []);
@@ -36,20 +37,17 @@ export default function FriendsQuestions({navigation}) {
   const getFriends = async () => {
     if (user) {
       const friendsCollection = collection(FIRESTORE_DB, 'friends');
-      const friendsQuery = query(
-        friendsCollection,
-        where('userId', '==', user.email),
-      );
+      const friendsQuery = query(friendsCollection, where('userId', '==', user.email));
 
       try {
         const friendsSnapshot = await getDocs(friendsQuery);
-        const friendsData = friendsSnapshot.docs.map(doc => ({
+        const friendsData = friendsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setFriends(friendsData);
 
-        const extractedFriendIds = friendsData.map(friend => friend.friendId);
+        const extractedFriendIds = friendsData.map((friend) => friend.friendId);
         setFriendIds(extractedFriendIds);
         loadQuestionsForFriends(extractedFriendIds);
       } catch (error) {
@@ -58,26 +56,19 @@ export default function FriendsQuestions({navigation}) {
     }
   };
 
-  const loadQuestionsForFriends = async friendIds => {
+  const loadQuestionsForFriends = async (friendIds) => {
     const unansweredQuestions = [];
 
     for (const friendId of friendIds) {
       const dailyCollectionRef = collection(FIRESTORE_DB, 'friendsQuestions');
-      const questionsFriends = query(
-        dailyCollectionRef,
-        where('email', '==', friendId),
-      );
+      const questionsFriends = query(dailyCollectionRef, where('email', '==', friendId));
 
       const dailySnapshot = await getDocs(questionsFriends);
 
       for (const doc of dailySnapshot.docs) {
-        const question = {id: doc.id, ...doc.data()};
+        const question = { id: doc.id, ...doc.data() };
         console.log(`Checking question: ${question.id}`);
-        const isAnswered = await isQuestionAnswered(
-          friendId,
-          question.id,
-          question.date,
-        );
+        const isAnswered = await isQuestionAnswered(friendId, question.id, question.date);
         console.log(`Question ID: ${question.id}, Answered: ${isAnswered}`);
         if (!isAnswered) {
           unansweredQuestions.push(question);
@@ -89,20 +80,30 @@ export default function FriendsQuestions({navigation}) {
   };
 
   const isQuestionAnswered = async (friendId, questionId, date) => {
-    const friendsAnswerCollectionRef = collection(
-      FIRESTORE_DB,
-      'friendsAnswers',
-    );
+    const friendsAnswerCollectionRef = collection(FIRESTORE_DB, 'friendsAnswers');
     const friendAnswerQuery = query(
       friendsAnswerCollectionRef,
       where('userId', '==', user.email),
       where('questionID', '==', questionId),
-      where('date', '==', date),
+      where('date', '==', date)
     );
 
     const friendAnswerSnapshot = await getDocs(friendAnswerQuery);
     return !friendAnswerSnapshot.empty;
   };
+
+  const handleSelectAnswer = (item, answer) => {
+    const isCorrect = item[answer] === item.usersAnswer;
+    setFeedbackColor(isCorrect ? 'green' : 'red');
+    setSelectedAnswer(isCorrect ? 'correct' : 'incorrect');
+    setQuestionDate(item.date);
+    setFriendsEmail(item.email);
+    setQuestionId(item.id);
+    setQuestionlastName(item.lastName);
+    setQuestionFirstName(item.firstName);
+    setQuestionDisplayName(item.displayName);
+  };
+
   const selectAnswer = async () => {
     await addDoc(collection(FIRESTORE_DB, 'friendsAnswers'), {
       usersAnswer: selectedAnswer,
@@ -118,6 +119,7 @@ export default function FriendsQuestions({navigation}) {
       loadQuestionsForFriends(friendIds);
     }
   };
+
   useEffect(() => {
     if (
       selectedAnswer &&
@@ -142,58 +144,34 @@ export default function FriendsQuestions({navigation}) {
     questionDisplayName,
   ]);
 
-  // console.log(friendIds);
-  // console.log(questions);
-  //console.log(individualQuestion);
   const questionsToDisplay = questions.slice(0, 1);
 
   return (
     <View style={styles.container}>
       {questionsToDisplay.length > 0 ? (
         questionsToDisplay.map((item, index) => (
-          <View key={index} style={styles.questionContainer}>
+          <Animated.View
+            key={index}
+            style={[styles.questionContainer, { borderColor: feedbackColor }]}
+          >
             <Text style={styles.questionText}>{item.questionOfTheDay}</Text>
             <Text style={styles.questionText}>
               {item.firstName + ' ' + item.lastName}
             </Text>
 
-            {[
-              'answerOption1',
-              'answerOption2',
-              'answerOption3',
-              'answerOption4',
-            ].map((answer, i) => (
+            {['answerOption1', 'answerOption2', 'answerOption3', 'answerOption4'].map((answer, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => {
-                  if (item[answer] === item.usersAnswer) {
-                    setSelectedAnswer('correct');
-                    setQuestionDate(item.date);
-                    setFriendsEmail(item.email);
-                    setQuestionId(item.id);
-                    setQuestionlastName(item.lastName);
-                    setQuestionFirstName(item.firstName);
-                    setQuestionDisplayName(item.displayName);
-                  } else {
-                    setSelectedAnswer('incorrect');
-                    setQuestionDate(item.date);
-                    setFriendsEmail(item.email);
-                    setQuestionId(item.id);
-                    setQuestionlastName(item.lastName);
-                    setQuestionFirstName(item.firstName);
-                    setQuestionDisplayName(item.displayName);
-                  }
-                }}
+                onPress={() => handleSelectAnswer(item, answer)}
                 style={[
                   styles.answerContainer,
-                  selectedAnswer === item[answer]
-                    ? styles.selectedAnswer
-                    : null,
-                ]}>
+                  selectedAnswer === item[answer] ? styles.selectedAnswer : null,
+                ]}
+              >
                 <Text style={styles.answerText}>{item[answer]}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </Animated.View>
         ))
       ) : (
         <Text>No more questions available at the moment.</Text>

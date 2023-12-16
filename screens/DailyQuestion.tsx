@@ -2,18 +2,18 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable semi */
 /* eslint-disable prettier/prettier */
-import {View, Text, StyleSheet, TouchableOpacity, Button} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {collection, getDocs, query, where} from 'firebase/firestore';
-import {FIRESTORE_DB} from '../firebaseConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { FIRESTORE_DB } from '../firebaseConfig';
+import { ThemedButton } from 'react-native-really-awesome-button';
 
-export default function DailyQuestion({navigation}) {
+
+export default function DailyQuestion({ navigation }) {
   const [currentQuestion, setcurrentQuestion] = useState([]);
   const [dailyAnswer, setDailyAnswer] = useState('');
   const [selectedAnswer, setSelectedAnswer] = useState('');
-  // //in case we will need to keep score for multiple answers
-  // const [score, setScore] = useState(0);
 
   useEffect(() => {
     const loadQuestion = async () => {
@@ -31,28 +31,22 @@ export default function DailyQuestion({navigation}) {
         ...doc.data(),
       }));
 
-      // Check if there are daily questions for today
       if (dailyQuestions.length > 0) {
-        // Access the first question (you may want to iterate over all if there are multiple)
         const firstQuestion = dailyQuestions[0];
         setcurrentQuestion(firstQuestion);
       } else {
-        // Handle the case when there are no questions for today
         console.log('No questions for today');
       }
     };
     loadQuestion();
   }, []);
 
-  const questionofDay = currentQuestion
-    ? currentQuestion.questionOfTheDay
-    : null;
+  const questionofDay = currentQuestion ? currentQuestion.questionOfTheDay : null;
   const answer1 = currentQuestion ? currentQuestion.answer1 : null;
   const answer2 = currentQuestion ? currentQuestion.answer2 : null;
   const answer3 = currentQuestion ? currentQuestion.answer3 : null;
   const answer4 = currentQuestion ? currentQuestion.answer4 : null;
   const answers = [answer1, answer2, answer3, answer4];
-  //console.log(answer4);
 
   const answerOfTheDay = async () => {
     try {
@@ -75,82 +69,77 @@ export default function DailyQuestion({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{questionofDay}</Text>
-        {answers.map((item, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                setDailyAnswer(item);
-                console.log(dailyAnswer);
-                setSelectedAnswer(item);
-              }}
-              style={
-                (styles.answerContainer,
-                selectedAnswer === item ? styles.selectedAnswer : null)
-              }
-              key={index}>
-              <Text style={styles.answerText}> {item} </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-      <View>
-        <Button
-          title="Answer"
-          disabled={!dailyAnswer}
+    <View style={styles.questionContainer}>
+      <Text style={styles.questionText}>{questionofDay}</Text>
+      {answers.map((item, index) => (
+        <ThemedButton
+        name="cartman"
+        type='primary'
+        width={300}
+          key={index}
+          backgroundDarker="#0056b3"
+          textColor="#fff"
           onPress={() => {
-            answerOfTheDay();
-            nextScreen();
+            setDailyAnswer(item);
+            setSelectedAnswer(item);
           }}
-        />
-      </View>
+          style={selectedAnswer === item ? styles.selectedAnswer : {}}
+        >
+          {item}
+        </ThemedButton>
+      ))}
     </View>
-  );
+    <ThemedButton
+    name="cartman"
+    type='primary'
+      backgroundDarker="#0056b3"
+      textColor="#fff"
+      onPress={() => {
+        answerOfTheDay();
+        nextScreen();
+      }}
+      disabled={!dailyAnswer}
+    >
+      Answer
+    </ThemedButton>
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   questionContainer: {
-    backgroundColor: '@DDDDDD',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    padding: 20,
+    marginBottom: 20,
+    borderRadius: 10,
+    shadowColor: '#000', // Adding shadow for depth
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   questionText: {
-    fontSize: 24,
-    color: 'black',
+    fontSize: 22,
+    color: '#333333', // Dark color for text
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   answerText: {
-    color: 'blue',
-    padding: 5,
+    color: 'black', // White text on buttons
     fontSize: 18,
   },
   answerContainer: {
-    borderBlockColor: 'black',
-    borderWidth: 1,
-    marginTop: 10,
-    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    marginVertical: 10,
   },
   selectedAnswer: {
-    backgroundColor: 'green',
+    backgroundColor: '#34C759', // Green for selected answers
   },
 });
-
-// //checking for answer comparasment(for later friends answers comparesment)
-// //dailyAnswer is the answer that was chosen by user
-// const checkAnswer = dailyAnswer => {
-//   //users original answer
-//   const answer = quizData[currentQuestion]?.answer;
-//   if (answer === dailyAnswer) {
-//      setScore((prevScore) => prevScore + 1);
-//     Alert.alert('right answer');
-//   } else {
-//     Alert.alert('You missed it!');
-//   }
-// };

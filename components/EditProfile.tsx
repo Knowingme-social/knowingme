@@ -279,7 +279,7 @@ export default function EditProfile({navigation}) {
         </View>  
       </View>
       <View>
-      <View style={{position: 'absolute', top: -15, left: 0}}>
+      <View style={{position: 'absolute', top: -625, left: 0}}>
           <GoBackButton navigation={navigation} />
         </View>
       </View>
