@@ -206,13 +206,13 @@ export default function WhoKnowsWho({navigation}) {
   const renderContent = () => {
     switch (selectedTab) {
       case 'bestKnownByYou':
-        return <Text>you know {bestFriend} the best</Text>;
+        return <Text>you know {bestFriend} the best {renderStatistics()} </Text>;
         {
           renderStatistics();
         }
         <Text>Statistics for 'Best Known you'</Text>;
       case 'bestKnownByOthers':
-        return <Text> {mostKnowledgeableFriend} knows you the best {renderStatistics()}</Text>;
+        return <Text> {mostKnowledgeableFriend} knows you the best </Text>;
         {
           renderStatistics();
         }
